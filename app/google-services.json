@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "62704752521",
+    "project_id": "aplicaciones-moviles-unaj",
+    "storage_bucket": "aplicaciones-moviles-unaj.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62704752521:android:f35a820d5d159a0013b358",
+        "android_client_info": {
+          "package_name": "com.example.android_tp_integrador"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62704752521-h00ommj6vgv4rf4qh1h6atetfvf5unk3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android_tp_integrador",
+            "certificate_hash": "796c1c7cfe752f0c0665e349060c1e12cd61965b"
+          }
+        },
+        {
+          "client_id": "62704752521-i51lpk8j167nhnfd1ivf37pif0a4sdep.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUf8upwl8Z96etE-pcesDs1i_ezl6qsX8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62704752521-i51lpk8j167nhnfd1ivf37pif0a4sdep.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
