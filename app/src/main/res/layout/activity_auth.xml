@@ -3,81 +3,105 @@
     android:id="@+id/authLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="@color/background"
     android:textColor="@color/colorText"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/emailEditText"
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorText"
-        android:textColorHint="@color/colorText"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:padding="16dp"
+        android:src="@drawable/logo"
+        android:scaleType="fitCenter"
+        />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="8dp" />
-
-    <EditText
-        android:id="@+id/passwordEditText"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Protección Animal"
         android:textColor="@color/colorText"
-        android:textColorHint="@color/colorText"
-        android:ems="10"
-        android:hint="Contraseña"
-        android:inputType="textPassword" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="8dp" />
+        android:textSize="32dp"
+        android:textAlignment="center"
+        android:padding="8dp"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/signUpButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/colorPrimaryButton"
-            android:textColor="@color/colorText"
-            android:text="Registrar" />
+        android:layout_height="match_parent"
+        android:background="@drawable/background_auth"
+        android:padding="32dp"
+        android:layout_marginTop="32dp"
+        android:orientation="vertical">
 
         <Space
-            android:layout_width="8dp"
-            android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorText"
+            android:ems="10"
+            android:hint="Email"
+            android:inputType="textEmailAddress" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorText"
+            android:ems="10"
+            android:hint="Contraseña"
+            android:inputType="textPassword" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
             android:layout_weight="0" />
 
         <Button
             android:id="@+id/loginButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
             android:background="@color/colorPrimaryButton"
             android:textColor="@color/colorText"
-            android:text="Acceder" />
+            android:text="Iniciar sesión" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <Button
+            android:id="@+id/signUpButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/colorPrimaryButton"
+            android:textColor="@color/colorText"
+            android:text="Registrarse" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_weight="0" />
+
+        <Button
+            android:id="@+id/googleButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:paddingHorizontal="16dp"
+            android:drawableStart="@mipmap/google_icon"
+            android:background="@color/colorText"
+            android:text="Google"
+            android:textColor="@color/colorTextSecondary" />
 
     </LinearLayout>
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:layout_weight="0" />
-
-    <Button
-        android:id="@+id/googleButton"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:paddingHorizontal="16dp"
-        android:drawableStart="@mipmap/google_icon"
-        android:background="@color/colorText"
-        android:text="Google"
-        android:textColor="@color/colorTextSecondary" />
 </LinearLayout>
