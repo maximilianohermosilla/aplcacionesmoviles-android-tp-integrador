@@ -44,6 +44,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorText"
             android:textColorHint="@color/colorText"
+            android:drawableEnd="@drawable/message"
             android:ems="10"
             android:hint="Email"
             android:inputType="textEmailAddress" />
@@ -58,6 +59,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorText"
             android:textColorHint="@color/colorText"
+            android:drawableEnd="@drawable/password"
             android:ems="10"
             android:hint="Contraseña"
             android:inputType="textPassword" />
