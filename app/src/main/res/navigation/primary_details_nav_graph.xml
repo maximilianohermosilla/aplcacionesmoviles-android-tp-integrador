@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/denuncia_list_fragment">
+
+    <fragment
+        android:id="@+id/denuncia_list_fragment"
+        android:name="com.example.android_tp_integrador.DenunciaListFragment"
+        android:label="Mis Denuncias">
+        <action
+            android:id="@+id/show_denuncia_detail"
+            app:destination="@id/denuncia_detail_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/denuncia_detail_fragment"
+        android:name="com.example.android_tp_integrador.DenunciaDetailFragment"
+        android:label="Detalle"
+        tools:layout="@layout/fragment_denuncia_detail">
+        <argument
+            android:name="item_id"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+</navigation>

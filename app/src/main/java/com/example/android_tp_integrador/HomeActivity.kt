@@ -1,6 +1,7 @@
 package com.example.android_tp_integrador
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
@@ -22,23 +23,41 @@ class HomeActivity : ComponentActivity() {
         val bundle: Bundle? = intent.extras
         val email: String = bundle?.getString("email").toString()
         val provider: String = bundle?.getString("provider").toString()
+        val name: String = bundle?.getString("name").toString()
 
-        setup(email ?: "", provider ?: "");
+        setup(email ?: "", provider ?: "", name ?: "");
 
         val prefs: SharedPreferences.Editor = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
         prefs.putString("email", email)
         prefs.putString("provider", provider)
+        prefs.putString("name", name)
         prefs.apply()
+
+        var denunciasButton: Button = findViewById(R.id.denunciasButton);
+        denunciasButton.setOnClickListener {
+            val intent = Intent(this, DenunciaDetailHostActivity::class.java)
+            startActivity(intent)
+        }
+
+        var nuevaDenunciaButton: Button = findViewById(R.id.nuevaDenunciaButton);
+        nuevaDenunciaButton.setOnClickListener {
+            val intent = Intent(this, NuevaDenunciaActivity::class.java)
+            startActivity(intent)
+        }
+
+
     }
 
-    private fun setup(email: String, provider: String) {
+    private fun setup(email: String, provider: String, name: String) {
         title = "Inicio"
         var emailTextView: TextView = findViewById(R.id.emailTextView);
         var providerTextView: TextView = findViewById(R.id.providerTextView);
+        var nameTextView: TextView = findViewById(R.id.nameTextView);
         var logoutButton: Button = findViewById(R.id.logoutButton);
 
         emailTextView.text = email;
         providerTextView.text = provider;
+        nameTextView.text = "Bienvenido/a $name";
 
         logoutButton.setOnClickListener{
 

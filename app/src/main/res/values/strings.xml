@@ -2,4 +2,7 @@
     <string name="app_name">AndroidIntegrador</string>
     <string name="prefs_file">android_tp_integrador.PREFERENCE_FILE_KEY</string>
     <string name="default_web_client_id">1:62704752521:android:f35a820d5d159a0013b358</string>
+    <string name="title_activity_denuncia_detail_host">DenunciaDetailHostActivity</string>
+    <string name="title_denuncia_list">Denuncias</string>
+    <string name="title_denuncia_detail">Denuncia Detail</string>
 </resources>
