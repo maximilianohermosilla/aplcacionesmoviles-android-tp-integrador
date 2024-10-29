@@ -55,27 +55,28 @@ class AuthActivity : ComponentActivity() {
         val backButton: Button = findViewById(R.id.backButton)
         val textDisplay: TextView = findViewById(R.id.textDisplay)
         val anonymousTextBtn: TextView = findViewById(R.id.anonymousBtn)
+        var googleButton: Button = findViewById(R.id.googleButton);
 
         // Eventos para los botones
         registerButton.setOnClickListener {
             flag = true
             expandBlock(expandableBlock, 0.55f)
-            removeButtonsAndShowForm(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, signUpButton, anonymousTextBtn, backButton)
+            removeButtonsAndShowForm(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, signUpButton, anonymousTextBtn, backButton, googleButton)
         }
 
         loginButton.setOnClickListener {
             flag = false
             expandBlock(expandableBlock, 0.55f)
-            removeButtonsAndShowForm(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, logInButton, anonymousTextBtn, backButton)
+            removeButtonsAndShowForm(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, logInButton, anonymousTextBtn, backButton, googleButton)
         }
 
         // Evento para el botón volver
         backButton.setOnClickListener {
             collapseBlock(expandableBlock, 0.35f)
             if(!flag){
-                restoreInitialState(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, logInButton, anonymousTextBtn, backButton)
+                restoreInitialState(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, logInButton, anonymousTextBtn, backButton, googleButton)
             } else {
-                restoreInitialState(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, signUpButton, anonymousTextBtn, backButton)
+                restoreInitialState(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, signUpButton, anonymousTextBtn, backButton, googleButton)
             }
         }
     }
@@ -103,7 +104,7 @@ class AuthActivity : ComponentActivity() {
         title = "Autenticación"
         var signUpButton: Button = findViewById(R.id.signUpButton);
         var loginButton: Button = findViewById(R.id.logInButton);
-        //var googleButton: Button = findViewById(R.id.googleButton);
+        var googleButton: Button = findViewById(R.id.googleButton);
         var emailEditText: EditText = findViewById(R.id.emailInput);
         var passwordEditText: EditText = findViewById(R.id.passwordInput);
 
@@ -151,17 +152,17 @@ class AuthActivity : ComponentActivity() {
             }
         }
 
-//        googleButton.setOnClickListener {
-//            val googleConf = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken(getString(R.string.default_web_client_id))
-//                .requestEmail()
-//                .build()
-//
-//            val googleClient: GoogleSignInClient = GoogleSignIn.getClient(this, googleConf)
-//            googleClient.signOut()
-//
-//            startActivityForResult(googleClient.signInIntent, GOOGLE_SIGN_IN)
-//        }
+        googleButton.setOnClickListener {
+            val googleConf = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+
+            val googleClient: GoogleSignInClient = GoogleSignIn.getClient(this, googleConf)
+            googleClient.signOut()
+
+            startActivityForResult(googleClient.signInIntent, GOOGLE_SIGN_IN)
+        }
     }
 
     private fun showAlert(){
@@ -287,7 +288,8 @@ class AuthActivity : ComponentActivity() {
         password: EditText,
         confirmButton: Button,
         anonymousBtn: TextView,
-        backButton: Button
+        backButton: Button,
+        googleButton: Button,
     ) {
         // Oculto los botones
         registerButton.visibility = View.GONE
@@ -296,8 +298,10 @@ class AuthActivity : ComponentActivity() {
 
         if(!flag){
             textDisplay.text = "Iniciar sesión"
+            googleButton.visibility = View.VISIBLE
         } else {
             textDisplay.text = "Crear una cuenta"
+            googleButton.visibility = View.GONE
         }
 
         // Hago los elementos visibles
@@ -318,7 +322,8 @@ class AuthActivity : ComponentActivity() {
         password: EditText,
         confirmButton: Button,
         anonymousBtn: TextView,
-        backButton: Button
+        backButton: Button,
+        googleButton: Button
     ) {
 
         registerButton.visibility = View.VISIBLE
@@ -330,6 +335,7 @@ class AuthActivity : ComponentActivity() {
         password.visibility = View.GONE
         confirmButton.visibility = View.GONE
         backButton.visibility = View.GONE
+        googleButton.visibility = View.GONE
     }
 
     // Función para convertir dp a px
