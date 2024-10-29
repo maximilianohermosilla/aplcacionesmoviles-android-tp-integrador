@@ -5,12 +5,15 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:background="@color/background"
+    android:textColor="@color/colorText"
     android:orientation="vertical">
 
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorText"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress" />
@@ -23,6 +26,8 @@
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorText"
         android:ems="10"
         android:hint="Contraseña"
         android:inputType="textPassword" />
@@ -41,8 +46,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:textColor="@android:color/white"
+            android:background="@color/colorPrimaryButton"
+            android:textColor="@color/colorText"
             android:text="Registrar" />
 
         <Space
@@ -55,8 +60,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="@android:color/white"
+            android:background="@color/colorPrimaryButton"
+            android:textColor="@color/colorText"
             android:text="Acceder" />
 
     </LinearLayout>
@@ -72,7 +77,7 @@
         android:layout_height="48dp"
         android:paddingHorizontal="16dp"
         android:drawableStart="@mipmap/google_icon"
-        android:background="@android:color/white"
+        android:background="@color/colorText"
         android:text="Google"
-        android:textColor="@color/colorPrimaryDark" />
+        android:textColor="@color/colorTextSecondary" />
 </LinearLayout>

@@ -17,6 +17,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/primary_details_nav_graph"
+        android:background="@color/background"
+        android:textColor="@color/colorText"
         tools:layout="@layout/fragment_denuncia_detail" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

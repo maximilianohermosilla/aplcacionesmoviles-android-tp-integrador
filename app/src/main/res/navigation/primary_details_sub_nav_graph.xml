@@ -3,11 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_details"
+    android:background="@color/background"
+    android:textColor="@color/colorText"
     app:startDestination="@id/fragment_denuncia_detail">
     <fragment
         android:id="@+id/fragment_denuncia_detail"
         android:name="com.example.android_tp_integrador.DenunciaDetailFragment"
         android:label="@string/title_denuncia_detail"
+        android:background="@color/background"
+        android:textColor="@color/colorText"
         tools:layout="@layout/fragment_denuncia_detail">
         <argument
             android:name="item_id"

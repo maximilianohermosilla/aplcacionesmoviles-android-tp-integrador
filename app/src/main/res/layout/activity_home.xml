@@ -4,11 +4,14 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:background="@color/background"
+    android:textColor="@color/colorText"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/nameTextView"
         android:layout_width="match_parent"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorText"
         android:layout_height="40dp"
         android:text="Nombre" />
 
@@ -19,6 +22,8 @@
     <TextView
         android:id="@+id/emailTextView"
         android:layout_width="match_parent"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorText"
         android:layout_height="40dp"
         android:text="Email" />
 
@@ -29,6 +34,8 @@
     <TextView
         android:id="@+id/providerTextView"
         android:layout_width="match_parent"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorText"
         android:layout_height="40dp"
         android:text="Proveedor" />
 
@@ -46,9 +53,9 @@
             android:id="@+id/nuevaDenunciaButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:text="Nueva denuncia"
-            android:textColor="@android:color/white" />
+            android:background="@color/colorPrimaryButton"
+            android:textColor="@color/colorText"
+            android:text="Nueva denuncia"/>
 
         <Space
             android:layout_width="match_parent"
@@ -58,20 +65,20 @@
             android:id="@+id/denunciasButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:text="Mis denuncias"
-            android:textColor="@android:color/white" />
+            android:background="@color/colorPrimaryButton"
+            android:textColor="@color/colorText"
+            android:text="Mis denuncias"/>
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="8dp" />
+            android:layout_height="16dp" />
 
         <Button
             android:id="@+id/logoutButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:text="Cerrar sesión"
-            android:textColor="@android:color/white" />
+            android:background="@color/colorSecondaryButton"
+            android:textColor="@color/colorText"
+            android:text="Cerrar sesión" />
     </LinearLayout>
 </LinearLayout>

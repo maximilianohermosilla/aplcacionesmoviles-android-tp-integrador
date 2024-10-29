@@ -5,6 +5,8 @@
     android:id="@+id/denuncia_list_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
+    android:textColor="@color/colorText"
     android:layout_marginStart="@dimen/container_horizontal_margin"
     android:layout_marginEnd="@dimen/container_horizontal_margin">
 
@@ -35,8 +37,8 @@
             android:id="@+id/volverButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="@android:color/white"
+            android:background="@color/colorPrimaryButton"
+            android:textColor="@color/colorText"
             android:text="Volver" />
 
     </LinearLayout>

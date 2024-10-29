@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DenunciaDetailHostActivity"
+    android:background="@color/background"
+    android:textColor="@color/colorText"
     tools:ignore="MergeRootFrame">
 
     <com.google.android.material.appbar.AppBarLayout
