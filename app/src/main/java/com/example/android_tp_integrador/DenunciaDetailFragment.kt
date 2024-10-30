@@ -25,7 +25,10 @@ class DenunciaDetailFragment : Fragment() {
      */
     private var item: PlaceholderContent.PlaceholderItem? = null
 
-    lateinit var itemDetailTextView: TextView
+    lateinit var itemTitleTextView: TextView
+    lateinit var itemDateTextView: TextView
+    lateinit var itemIdTextView: TextView
+    lateinit var itemDescriptionTextView: TextView
     private var toolbarLayout: CollapsingToolbarLayout? = null
 
     private var _binding: FragmentDenunciaDetailBinding? = null
@@ -66,7 +69,10 @@ class DenunciaDetailFragment : Fragment() {
         val rootView = binding.root
 
         toolbarLayout = binding.toolbarLayout
-        itemDetailTextView = binding.denunciaDetail
+        itemTitleTextView = binding.denunciaTitle!!
+        itemDateTextView = binding.denunciaDate!!
+        itemIdTextView = binding.denunciaId!!
+        itemDescriptionTextView = binding.denunciaDescription!!
 
         updateContent()
         rootView.setOnDragListener(dragListener)
@@ -75,11 +81,14 @@ class DenunciaDetailFragment : Fragment() {
     }
 
     private fun updateContent() {
-        toolbarLayout?.title = item?.content
+        toolbarLayout?.title = "Protección Animal" //item?.title
 
         // Show the placeholder content as text in a TextView.
         item?.let {
-            itemDetailTextView.text = it.details
+            itemTitleTextView.text = it.title
+            itemDateTextView.text = "Fecha: " + it.dateCreation
+            itemIdTextView.text = it.id
+            itemDescriptionTextView.text = "Descripción: \n\n" + it.description
         }
     }
 

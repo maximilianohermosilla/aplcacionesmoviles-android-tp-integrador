@@ -1,5 +1,6 @@
 package com.example.android_tp_integrador
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipDescription
 import android.os.Build
@@ -120,10 +121,13 @@ class DenunciaListFragment : Fragment() {
 
         }
 
+        @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = values[position]
             holder.idView.text = item.id
-            holder.contentView.text = item.content
+            holder.textDate.text = item.dateCreation
+            holder.textTitle.text = item.title
+            holder.textPriority.text = "Prioridad: " + item.priority
 
             with(holder.itemView) {
                 tag = item
@@ -192,7 +196,9 @@ class DenunciaListFragment : Fragment() {
         inner class ViewHolder(binding: DenunciaListContentBinding) :
             RecyclerView.ViewHolder(binding.root) {
             val idView: TextView = binding.idText
-            val contentView: TextView = binding.content
+            val textDate: TextView = binding.textDate
+            val textTitle: TextView = binding.textTitle
+            val textPriority: TextView = binding.textPriority
         }
 
     }

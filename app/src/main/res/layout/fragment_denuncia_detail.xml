@@ -12,6 +12,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
+        android:background="@color/background"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height">
 
@@ -19,13 +20,16 @@
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textAlignment="center"
             app:contentScrim="?attr/colorPrimary"
+            android:background="@color/background"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/detail_toolbar"
                 android:layout_width="match_parent"
+                android:background="@color/background"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"/>
 
@@ -37,31 +41,114 @@
         android:id="@+id/denuncia_detail_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:id="@+id/denuncia_detail"
-            style="?android:attr/textAppearanceLarge"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="@dimen/container_horizontal_margin"
-            android:paddingTop="16dp"
-            android:paddingEnd="@dimen/container_horizontal_margin"
-            android:paddingBottom="16dp"
-            android:textIsSelectable="true"
-            tools:context="com.example.android_tp_integrador.DenunciaDetailFragment" />
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_button_white"
+            >
 
+            <TextView
+                android:id="@+id/denuncia_title"
+                style="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="20dp"
+                android:textIsSelectable="true"
+                android:textColor="@color/colorTextSecondary"
+                tools:context="com.example.android_tp_integrador.DenunciaDetailFragment" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp"
+                >
+
+                <TextView
+                    android:id="@+id/denuncia_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="16dp"
+                    android:textIsSelectable="true"
+                    android:textColor="@color/colorTextSecondary"
+                    tools:context="com.example.android_tp_integrador.DenunciaDetailFragment" />
+
+                <TextView
+                    android:id="@+id/denuncia_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:paddingHorizontal="16dp"
+                    android:textIsSelectable="true"
+                    android:textColor="@color/colorTextSecondary"
+                    tools:context="com.example.android_tp_integrador.DenunciaDetailFragment" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000" />
+
+            <TextView
+                android:id="@+id/denuncia_description"
+                style="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                android:textIsSelectable="true"
+                android:textColor="@color/colorTextSecondary"
+                tools:context="com.example.android_tp_integrador.DenunciaDetailFragment" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1"
+            >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    style="?android:attr/textAppearanceLarge"
+                    android:padding="16dp"
+                    android:textColor="@color/colorTextSecondary"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="10dp"
+                    android:text="Foto(s):"/>
+
+                <ImageView
+                    android:id="@+id/logoImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/main_photo"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="20dp"
+                    tools:ignore="MissingConstraints" />
+            </LinearLayout>
+
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|start"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        app:layout_anchor="@+id/denuncia_detail_scroll_view"
-        app:layout_anchorGravity="top|end"
-        app:srcCompat="@android:drawable/stat_notify_chat" />
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/fab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center_vertical|start"-->
+<!--        android:layout_marginEnd="@dimen/fab_margin"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        app:layout_anchor="@+id/denuncia_detail_scroll_view"-->
+<!--        app:layout_anchorGravity="top|end"-->
+<!--        app:srcCompat="@android:drawable/stat_notify_chat" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

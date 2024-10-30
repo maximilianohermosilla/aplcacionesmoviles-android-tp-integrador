@@ -6,7 +6,41 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/denuncia_detail"
+        android:id="@+id/denuncia_title"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:textIsSelectable="true"
+        tools:context="com.example.android_tp_integrador.DenunciaDetailFragment" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
+        >
+
+        <TextView
+            android:id="@+id/denuncia_date"
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:textIsSelectable="true"
+            tools:context="com.example.android_tp_integrador.DenunciaDetailFragment" />
+
+        <TextView
+            android:id="@+id/denuncia_id"
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:textIsSelectable="true"
+            tools:context="com.example.android_tp_integrador.DenunciaDetailFragment" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/denuncia_description"
         style="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

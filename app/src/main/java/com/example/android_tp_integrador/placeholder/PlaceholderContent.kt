@@ -24,9 +24,9 @@ object PlaceholderContent {
     private val COUNT = 25
 
     init {
-        addItem(PlaceholderItem("1", "Denuncia 1", "Perro abandonado sin comida"));
-        addItem(PlaceholderItem("2", "Denuncia 2", "Caballo utilizado para transporte de carro"));
-        addItem(PlaceholderItem("3", "Denuncia 3", "Comida con veneno en plaza pública"));
+        addItem(PlaceholderItem("#001", "Perro abandonado sin comida", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae  accumsan sem, non fermentum libero. Mauris ex nisi, lobortis eu ipsum  id, finibus dictum leo. ", "22/10/2024", null, "Nuevo", "Media", null, "Perro", null, null, null));
+        addItem(PlaceholderItem("#002", "Caballo utilizado para transporte de carro", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae  accumsan sem, non fermentum libero. Mauris ex nisi, lobortis eu ipsum  id, finibus dictum leo. ", "27/10/2024", null, "Asignado", "Baja", null, "Caballo", null, null, null));
+        addItem(PlaceholderItem("#003", "Comida con veneno en plaza pública", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae  accumsan sem, non fermentum libero. Mauris ex nisi, lobortis eu ipsum  id, finibus dictum leo.", "28/09/2024", "29/10/2024", "Resuelto", "Alta", null, null, null, null, null));
         // Add some sample items.
 //        for (i in 1..COUNT) {
 //            addItem(createPlaceholderItem(i))
@@ -38,23 +38,24 @@ object PlaceholderContent {
         ITEM_MAP.put(item.id, item)
     }
 
-    private fun createPlaceholderItem(position: Int): PlaceholderItem {
-        return PlaceholderItem(position.toString(), "Item " + position, makeDetails(position))
-    }
-
-    private fun makeDetails(position: Int): String {
-        val builder = StringBuilder()
-        builder.append("Details about Item: ").append(position)
-        for (i in 0..position - 1) {
-            builder.append("\nMore details information here.")
-        }
-        return builder.toString()
-    }
+//    private fun createPlaceholderItem(position: Int): PlaceholderItem {
+//        return PlaceholderItem(position.toString(), "Item " + position, makeDetails(position))
+//    }
+//
+//    private fun makeDetails(position: Int): String {
+//        val builder = StringBuilder()
+//        builder.append("Details about Item: ").append(position)
+//        for (i in 0..position - 1) {
+//            builder.append("\nMore details information here.")
+//        }
+//        return builder.toString()
+//    }
 
     /**
      * A placeholder item representing a piece of content.
      */
-    data class PlaceholderItem(val id: String, val content: String, val details: String) {
-        override fun toString(): String = content
+    data class PlaceholderItem(val id: String, val title: String, val description: String, val dateCreation: String?, val dateResolution: String?, val state: String?
+                               , val priority: String?, val ubication: String?, val type: String?, val images: List<Any>?, val states: List<Any>?, val comments: List<Any>?) {
+        override fun toString(): String = title
     }
 }
