@@ -1,54 +1,190 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/photoActivity"
-    android:orientation="vertical"
     android:background="@color/background"
     android:textColor="@color/colorText"
     android:padding="16dp">
 
-    <!-- Contenedor para los botones (horizontal) -->
+    <!-- Contenedor para los botones -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/buttonContainer"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="16dp">  <!-- Separación entre los botones y el contenedor de imágenes -->
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Botón para abrir la cámara -->
         <Button
             android:id="@+id/openCameraButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Abrir Cámara"
-            android:layout_marginEnd="16dp" /> <!-- Margen entre botones -->
+            android:layout_marginEnd="16dp" />
 
-        <!-- Botón para abrir la galería -->
         <Button
             android:id="@+id/openGaleryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Abrir Galeria" />
-
+            android:text="Abrir Galería" />
     </LinearLayout>
 
-    <!-- Contenedor donde se agregarán las fotos -->
-    <ScrollView
+    <!-- Contenedor de las imágenes -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/imageContainer"
+        android:layout_marginTop="40dp"
+        app:layout_constraintTop_toBottomOf="@+id/buttonContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
-            android:id="@+id/imageContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
-    </ScrollView>
+        <!-- Primera imagen -->
+        <FrameLayout
+            android:id="@+id/firstImageFrame"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintWidth_percent="0.49"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-</LinearLayout>
+            <ImageView
+                android:id="@+id/firstImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:scaleType="centerCrop" />
 
+            <ImageButton
+                android:id="@+id/deleteImageButton1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/delete"
+                android:visibility="gone"
+                android:layout_gravity="top|end"
+                android:contentDescription="Eliminar imagen" />
+        </FrameLayout>
 
+        <!-- Segunda imagen -->
+        <FrameLayout
+            android:id="@+id/secondImageFrame"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintStart_toEndOf="@id/firstImageFrame"
+            app:layout_constraintTop_toTopOf="parent">
 
+            <ImageView
+                android:id="@+id/secondImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="4dp"
+                android:scaleType="centerCrop" />
 
+            <ImageButton
+                android:id="@+id/deleteImageButton2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/delete"
+                android:visibility="gone"
+                android:layout_gravity="top|end"
+                android:contentDescription="Eliminar imagen" />
+        </FrameLayout>
 
+        <!-- Tercera imagen -->
+        <FrameLayout
+            android:id="@+id/thirdImageFrame"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintStart_toEndOf="@id/firstImageFrame"
+            app:layout_constraintTop_toBottomOf="@id/secondImageFrame">
+
+            <ImageView
+                android:id="@+id/thirdImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="4dp"
+                android:scaleType="centerCrop" />
+
+            <ImageButton
+                android:id="@+id/deleteImageButton3"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/delete"
+                android:visibility="gone"
+                android:layout_gravity="top|end"
+                android:contentDescription="Eliminar imagen" />
+        </FrameLayout>
+
+        <!-- Cuarta imagen -->
+        <FrameLayout
+            android:id="@+id/fourthImageFrame"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintStart_toEndOf="@id/secondImageFrame"
+            tools:ignore="MissingConstraints">
+
+            <ImageView
+                android:id="@+id/fourthImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="4dp"
+                android:scaleType="centerCrop" />
+
+            <ImageButton
+                android:id="@+id/deleteImageButton4"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/delete"
+                android:visibility="gone"
+                android:layout_gravity="top|end"
+                android:contentDescription="Eliminar imagen" />
+        </FrameLayout>
+
+        <!-- Quinta imagen -->
+        <FrameLayout
+            android:id="@+id/fifthImageFrame"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintStart_toEndOf="@id/thirdImageFrame"
+            app:layout_constraintTop_toBottomOf="@id/fourthImageFrame">
+
+            <ImageView
+                android:id="@+id/fifthImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="4dp"
+                android:scaleType="centerCrop" />
+
+            <ImageButton
+                android:id="@+id/deleteImageButton5"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/delete"
+                android:visibility="gone"
+                android:layout_gravity="top|end"
+                android:contentDescription="Eliminar imagen" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

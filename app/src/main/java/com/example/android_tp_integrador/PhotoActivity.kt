@@ -18,9 +18,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 
 class PhotoActivity : AppCompatActivity() {
 
@@ -29,7 +32,8 @@ class PhotoActivity : AppCompatActivity() {
     private val GALLERY_REQUEST_CODE = 102
     private val STORAGE_PERMISSION_CODE = 103
 
-    private lateinit var imageContainer: LinearLayout
+    private lateinit var imageContainer: ConstraintLayout
+    private val imageList = mutableListOf<Bitmap>() // Lista de imágenes
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +47,6 @@ class PhotoActivity : AppCompatActivity() {
             insets
         }
 
-        // Inicializar el contenedor de imágenes
         imageContainer = findViewById(R.id.imageContainer)
 
         var openCameraBtn: Button = findViewById(R.id.openCameraButton)
@@ -51,8 +54,7 @@ class PhotoActivity : AppCompatActivity() {
             checkCameraPermission()
         }
 
-        // Botón para abrir la galería
-        val openGalleryBtn: Button = findViewById(R.id.openGaleryButton) // Asegúrate de tener este botón en tu layout
+        val openGalleryBtn: Button = findViewById(R.id.openGaleryButton)
         openGalleryBtn.setOnClickListener {
             checkStoragePermission()
         }
@@ -60,16 +62,15 @@ class PhotoActivity : AppCompatActivity() {
 
     // Método para verificar y solicitar permisos
     fun checkCameraPermission() {
+        // Me fijo si ya tiene el permiso
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            // Solicitar el permiso si no está concedido
+            // Solicito permiso
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
         } else {
-            // Si el permiso ya está concedido, abrir la cámara
             openCamera()
         }
     }
 
-    // Abrir la cámara
     private fun openCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (intent.resolveActivity(packageManager) != null) {
@@ -79,7 +80,6 @@ class PhotoActivity : AppCompatActivity() {
         }
     }
 
-    // Manejar el resultado de los permisos solicitados
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
@@ -100,22 +100,18 @@ class PhotoActivity : AppCompatActivity() {
         }
     }
 
-    // Manejar el resultado de la cámara o galería
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 CAMERA_REQUEST_CODE -> {
-                    // Aquí manejarías la foto tomada con la cámara (podemos manejarlo más adelante)
-                    if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
-                        val imageBitmap = data?.extras?.get("data") as Bitmap
-                        addImageToLayout(imageBitmap)
-                    }
+                    val imageBitmap = data?.extras?.get("data") as Bitmap
+                    addImageToLayout(imageBitmap)
                 }
                 GALLERY_REQUEST_CODE -> {
                     val selectedImageUri: Uri? = data?.data
                     if (selectedImageUri != null) {
-                        // Convertir el URI a Bitmap
                         val bitmap = uriToBitmap(selectedImageUri)
                         if (bitmap != null) {
                             addImageToLayout(bitmap)
@@ -126,92 +122,59 @@ class PhotoActivity : AppCompatActivity() {
         }
     }
 
-    // Agregar la imagen al layout dinámicamente
-//    private fun addImageToLayout(bitmap: Bitmap) {
-//        val imageView = ImageView(this)
-//        imageView.setImageBitmap(bitmap)
-//
-//        // Configurar tamaño y márgenes del ImageView
-//        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-//        params.setMargins(8, 8, 8, 8)  // Márgenes para separar las imágenes
-//        imageView.layoutParams = params
-//
-//        // Agregar la imagen al contenedor
-//        imageContainer.addView(imageView)
-//    }
-
-    // Agregar la imagen al layout dinámicamente
-//    private fun addImageToLayout(bitmap: Bitmap) {
-//        val imageView = ImageView(this)
-//        imageView.setImageBitmap(bitmap)
-//
-//        // Configurar tamaño de la imagen y otras propiedades si es necesario
-//        val params = LinearLayout.LayoutParams(
-//            LinearLayout.LayoutParams.WRAP_CONTENT,
-//            LinearLayout.LayoutParams.WRAP_CONTENT
-//        )
-//        params.setMargins(8, 8, 8, 8) // Margen entre imágenes
-//        imageView.layoutParams = params
-//
-//        // Añadir el ImageView al contenedor
-//        imageContainer.addView(imageView)
-//    }
-
+    // Función para agregar la imagen al layout
     private fun addImageToLayout(bitmap: Bitmap) {
-        val imageView = ImageView(this)
+        val resizedBitmap = resizeBitmap(bitmap, 500, 500)
+        imageList.add(resizedBitmap)
 
-        // Redimensionar el bitmap si es necesario
-        val resizedBitmap = resizeBitmap(bitmap, 500, 500) // Máximo 500px de ancho y alto
-
-        // Establecer el bitmap redimensionado en el ImageView
-        imageView.setImageBitmap(resizedBitmap)
-
-        // Configurar tamaño de la imagen y otras propiedades si es necesario
-        val params = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        params.setMargins(8, 8, 8, 8) // Margen entre imágenes
-        imageView.layoutParams = params
-
-        // Añadir el ImageView al contenedor
-        imageContainer.addView(imageView)
+        refreshImageViews()
     }
 
-    private fun resizeBitmap(bitmap: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
-        val width = bitmap.width
-        val height = bitmap.height
+    private fun refreshImageViews() {
+        val imageViewIds = listOf(
+            R.id.firstImageView,
+            R.id.secondImageView,
+            R.id.thirdImageView,
+            R.id.fourthImageView,
+            R.id.fifthImageView
+        )
 
-        val aspectRatio: Float = width.toFloat() / height.toFloat()
-
-        val newWidth: Int
-        val newHeight: Int
-
-        if (width > height) {
-            newWidth = maxWidth
-            newHeight = (newWidth / aspectRatio).toInt()
-        } else {
-            newHeight = maxHeight
-            newWidth = (newHeight * aspectRatio).toInt()
+        // Limpio todos los ImageViews
+        for (id in imageViewIds) {
+            val imageView = findViewById<ImageView>(id)
+            imageView.setImageDrawable(null)
         }
 
-        return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+        for (i in imageList.indices) {
+            if (i < imageViewIds.size) {
+                val imageView = findViewById<ImageView>(imageViewIds[i])
+                imageView.setImageBitmap(imageList[i])
+
+                val deleteButtonId = resources.getIdentifier("deleteImageButton${i + 1}", "id", packageName)
+                val deleteButton = findViewById<ImageButton>(deleteButtonId)
+                deleteButton.visibility = View.VISIBLE
+                deleteButton.setOnClickListener {
+                    deleteButton.visibility = View.GONE
+                    removeImage(i)
+                }
+            }
+        }
+    }
+
+    private fun removeImage(position: Int) {
+        if (position in imageList.indices) {
+            imageList.removeAt(position)
+            refreshImageViews()
+        }
+    }
+
+    private fun resizeBitmap(bitmap: Bitmap, width: Int, height: Int): Bitmap {
+        return Bitmap.createScaledBitmap(bitmap, width, height, false)
     }
 
     //GALERÍA
 
-    // Método para verificar y solicitar permisos de almacenamiento
-//    fun checkStoragePermission() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            // Solicitar el permiso si no está concedido
-//            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
-//        } else {
-//            // Si el permiso ya está concedido, abrir la galería
-//            openGallery()
-//        }
-//    }
-
-    // Verificar y solicitar permiso para Android 13 (API 33) y superior
+    // Verifico y solicito permiso para Android 13 (API 33) y superior
     fun checkStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
@@ -229,19 +192,13 @@ class PhotoActivity : AppCompatActivity() {
         }
     }
 
-    // Abrir la galería
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*" // Permitir solo imágenes
+        intent.type = "image/*" // Permite solo imágenes
         startActivityForResult(intent, GALLERY_REQUEST_CODE)
     }
 
-    private fun enableEdgeToEdge() {
-        // Método para ajustar la pantalla a modo "Edge to Edge"
-        // Puedes dejarlo como está si ya lo tienes implementado
-    }
-
-    // Convertir el Uri en un Bitmap
+    // Convierte el Uri en un Bitmap
     private fun uriToBitmap(uri: Uri): Bitmap? {
         return try {
             val inputStream = contentResolver.openInputStream(uri)
