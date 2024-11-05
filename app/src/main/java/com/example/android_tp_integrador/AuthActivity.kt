@@ -28,11 +28,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import com.google.firebase.firestore.FirebaseFirestore
 
 class AuthActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private val GOOGLE_SIGN_IN = 100
+    private val db = FirebaseFirestore.getInstance();
     var flag: Boolean = true
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,6 +126,10 @@ class AuthActivity : ComponentActivity() {
                 )
                     .addOnCompleteListener() {
                         if (it.isSuccessful) {
+                            db.collection("users").document(emailEditText.text.toString()).set(
+                                hashMapOf("name" to emailEditText.text.toString(),
+                                    "password" to passwordEditText.text.toString())
+                            )
                             showHome(it.result.user?.email.toString() ?: "", ProviderType.BASIC, it.result.user?.displayName ?: "")
                         } else {
                             showAlert()
