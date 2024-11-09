@@ -24,6 +24,7 @@ import com.google.firebase.auth.auth
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.widget.ImageView
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -35,7 +36,7 @@ class AuthActivity : ComponentActivity() {
     private val GOOGLE_SIGN_IN = 100
     private val db = FirebaseFirestore.getInstance();
     var flag: Boolean = true
-
+    lateinit var selectedRole: String
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,36 +51,50 @@ class AuthActivity : ComponentActivity() {
         // Referencia a los elementos del UI
         val expandableBlock: LinearLayout = findViewById(R.id.expandableBlock)
         val registerButton: Button = findViewById(R.id.registerButton)
+        val textLogo: TextView = findViewById(R.id.textLogo)
         val loginButton: Button = findViewById(R.id.loginButton)
+        val nameInput: EditText = findViewById(R.id.nameInput)
+        val lastnameInput: EditText = findViewById(R.id.lastnameInput)
         val emailInput: EditText = findViewById(R.id.emailInput)
         val passwordInput: EditText = findViewById(R.id.passwordInput)
+        val rePasswordInput: EditText = findViewById(R.id.rePasswordInput)
+        val roleTextView: TextView = findViewById(R.id.roleTextView)
+        val radioGroup: RadioGroup = findViewById(R.id.roleRadioGroup)
         val signUpButton: Button = findViewById(R.id.signUpButton)
         val logInButton: Button = findViewById(R.id.logInButton)
         val backButton: Button = findViewById(R.id.backButton)
         val textDisplay: TextView = findViewById(R.id.textDisplay)
-        val anonymousTextBtn: TextView = findViewById(R.id.anonymousBtn)
         var googleButton: Button = findViewById(R.id.googleButton);
+
+        // Obtengo el rol seleccionado
+        selectedRole = when (radioGroup.checkedRadioButtonId) {
+            R.id.denuncianteRadioButton -> "Denunciante"
+            R.id.protectorRadioButton -> "Protector"
+            else -> ""
+        }
 
         // Eventos para los botones
         registerButton.setOnClickListener {
             flag = true
-            expandBlock(expandableBlock, 0.55f)
-            removeButtonsAndShowForm(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, signUpButton, anonymousTextBtn, backButton, googleButton)
+            expandBlock(expandableBlock, 0.72f)
+            removeButtonsAndShowForm(expandableBlock, textDisplay, textLogo, registerButton, loginButton, nameInput, lastnameInput, emailInput, passwordInput, rePasswordInput, roleTextView, radioGroup, signUpButton, backButton, googleButton)
         }
 
         loginButton.setOnClickListener {
             flag = false
             expandBlock(expandableBlock, 0.55f)
-            removeButtonsAndShowForm(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, logInButton, anonymousTextBtn, backButton, googleButton)
+            removeButtonsAndShowForm(expandableBlock, textDisplay, textLogo, registerButton, loginButton, nameInput, lastnameInput, emailInput, passwordInput, rePasswordInput, roleTextView, radioGroup, logInButton, backButton, googleButton)
         }
 
         // Evento para el botón volver
         backButton.setOnClickListener {
-            collapseBlock(expandableBlock, 0.35f)
-            if(!flag){
-                restoreInitialState(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, logInButton, anonymousTextBtn, backButton, googleButton)
-            } else {
-                restoreInitialState(expandableBlock, textDisplay, registerButton, loginButton, emailInput, passwordInput, signUpButton, anonymousTextBtn, backButton, googleButton)
+
+            if(!flag){ //login
+                collapseBlock(expandableBlock, 0.55f, 0.35f)
+                restoreInitialState(expandableBlock, textDisplay, textLogo, registerButton, loginButton, nameInput, lastnameInput, emailInput, passwordInput, rePasswordInput, roleTextView, radioGroup, logInButton, backButton, googleButton)
+            } else { //register
+                collapseBlock(expandableBlock, 0.72f, 0.35f)
+                restoreInitialState(expandableBlock, textDisplay, textLogo, registerButton, loginButton, nameInput, lastnameInput, emailInput, passwordInput, rePasswordInput, roleTextView, radioGroup, signUpButton, backButton, googleButton)
             }
         }
     }
@@ -109,6 +124,8 @@ class AuthActivity : ComponentActivity() {
         var signUpButton: Button = findViewById(R.id.signUpButton);
         var loginButton: Button = findViewById(R.id.logInButton);
         var googleButton: Button = findViewById(R.id.googleButton);
+        var nameInput: EditText = findViewById(R.id.nameInput)
+        var lastnameInput: EditText = findViewById(R.id.lastnameInput)
         var emailEditText: EditText = findViewById(R.id.emailInput);
         var passwordEditText: EditText = findViewById(R.id.passwordInput);
 
@@ -126,9 +143,16 @@ class AuthActivity : ComponentActivity() {
                 )
                     .addOnCompleteListener() {
                         if (it.isSuccessful) {
-                            db.collection("users").document(emailEditText.text.toString()).set(
-                                hashMapOf("name" to emailEditText.text.toString(),
-                                    "password" to passwordEditText.text.toString())
+                            val uid = it.result?.user?.uid ?: ""
+                            db.collection("users").document(uid).set(
+                                hashMapOf(
+                                    "id" to uid,
+                                    "name" to nameInput.text.toString(),
+                                    "lastname" to lastnameInput.text.toString(),
+                                    "email" to emailEditText.text.toString(),
+                                    "password" to passwordEditText.text.toString(),
+                                    "role" to selectedRole
+                                )
                             )
                             showHome(it.result.user?.email.toString() ?: "", ProviderType.BASIC, it.result.user?.displayName ?: "")
                         } else {
@@ -239,10 +263,13 @@ class AuthActivity : ComponentActivity() {
         val constraintSet = ConstraintSet()
         constraintSet.clone(parentLayout)
 
-        val heightInPx = dpToPx(200) // 200dp a px
-
+        val heightInPx = dpToPx(195) // 200dp a px
         // Cambiar el tamaño del ImageView utilizando ConstraintSet
         constraintSet.constrainHeight(R.id.logoImage, heightInPx) // Nueva altura en píxeles
+
+        val marginInPx = dpToPx(10) // Cambiar a tu valor deseado en dp
+        // Cambiar el marginTop del ImageView
+        constraintSet.setMargin(R.id.logoImage, ConstraintSet.TOP, marginInPx)
 
         // Aplicar los cambios del ConstraintSet
         constraintSet.applyTo(parentLayout)
@@ -263,7 +290,7 @@ class AuthActivity : ComponentActivity() {
     }
 
     // Funcion para animar la reducción de altura del LinearLayout
-    private fun collapseBlock(view: View, targetPercentage: Float) {
+    private fun collapseBlock(view: View, startHeight: Float, targetPercentage: Float) {
         val parentLayout: ConstraintLayout = findViewById(R.id.constraintLayout)
         val constraintSet = ConstraintSet()
         constraintSet.clone(parentLayout)
@@ -276,7 +303,7 @@ class AuthActivity : ComponentActivity() {
         // Aplicar los cambios del ConstraintSet
         constraintSet.applyTo(parentLayout)
 
-        val animator = ValueAnimator.ofFloat(0.55f, targetPercentage)
+        val animator = ValueAnimator.ofFloat(startHeight, targetPercentage)
         animator.duration = 500
 
         animator.addUpdateListener { animation ->
@@ -291,25 +318,35 @@ class AuthActivity : ComponentActivity() {
     private fun removeButtonsAndShowForm(
         expandableBlock: LinearLayout,
         textDisplay: TextView,
+        textLogo: TextView,
         registerButton: Button,
         loginButton: Button,
+        name: EditText,
+        lastName: EditText,
         email: EditText,
         password: EditText,
+        rePassword: EditText,
+        roleTextView: TextView,
+        radioGroup: RadioGroup,
         confirmButton: Button,
-        anonymousBtn: TextView,
         backButton: Button,
         googleButton: Button,
     ) {
         // Oculto los botones
         registerButton.visibility = View.GONE
         loginButton.visibility = View.GONE
-        anonymousBtn.visibility = View.GONE
+        textLogo.visibility = View.INVISIBLE
 
         if(!flag){
             textDisplay.text = "Iniciar sesión"
             googleButton.visibility = View.VISIBLE
         } else {
             textDisplay.text = "Crear una cuenta"
+            name.visibility = View.VISIBLE
+            lastName.visibility = View.VISIBLE
+            rePassword.visibility = View.VISIBLE
+            roleTextView.visibility = View.VISIBLE
+            radioGroup.visibility = View.VISIBLE
             googleButton.visibility = View.GONE
         }
 
@@ -325,23 +362,33 @@ class AuthActivity : ComponentActivity() {
     private fun restoreInitialState(
         expandableBlock: LinearLayout,
         textDisplay: TextView,
+        textLogo: TextView,
         registerButton: Button,
         loginButton: Button,
+        name: EditText,
+        lastName: EditText,
         email: EditText,
         password: EditText,
+        rePassword: EditText,
+        roleTextView: TextView,
+        radioGroup: RadioGroup,
         confirmButton: Button,
-        anonymousBtn: TextView,
         backButton: Button,
         googleButton: Button
     ) {
 
         registerButton.visibility = View.VISIBLE
         loginButton.visibility = View.VISIBLE
-        anonymousBtn.visibility = View.VISIBLE
+        textLogo.visibility = View.VISIBLE
 
         textDisplay.visibility = View.GONE
+        name.visibility = View.GONE
+        lastName.visibility = View.GONE
         email.visibility = View.GONE
         password.visibility = View.GONE
+        rePassword.visibility = View.GONE
+        roleTextView.visibility = View.GONE
+        radioGroup.visibility = View.GONE
         confirmButton.visibility = View.GONE
         backButton.visibility = View.GONE
         googleButton.visibility = View.GONE
