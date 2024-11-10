@@ -58,6 +58,17 @@ class PhotoActivity : AppCompatActivity() {
         openGalleryBtn.setOnClickListener {
             checkStoragePermission()
         }
+
+        val previousButton: Button = findViewById(R.id.previousBtn)
+        previousButton.setOnClickListener {
+            onBackPressed()
+        }
+
+        var nextButton: Button = findViewById(R.id.nextBtn);
+        nextButton.setOnClickListener {
+            val intent = Intent(this, LocationActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     // Método para verificar y solicitar permisos

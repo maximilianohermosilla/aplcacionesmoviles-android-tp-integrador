@@ -35,13 +35,41 @@
             android:text="Abrir Galería" />
     </LinearLayout>
 
+    <!-- Contenedor para los botones 2 -->
+    <LinearLayout
+        android:id="@+id/buttonContainer2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/imageContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/previousBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Anterior"
+            android:layout_marginEnd="16dp"/>
+
+        <Button
+            android:id="@+id/nextBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Siguiente" />
+    </LinearLayout>
+
     <!-- Contenedor de las imágenes -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imageContainer"
-        android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@+id/buttonContainer"
+        app:layout_constraintTop_toBottomOf="@+id/buttonContainer2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -186,5 +214,8 @@
                 android:contentDescription="Eliminar imagen" />
         </FrameLayout>
 
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
