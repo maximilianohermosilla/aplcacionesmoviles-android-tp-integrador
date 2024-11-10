@@ -23,9 +23,11 @@ import com.google.firebase.auth.auth
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.PendingIntent.getActivity
 import android.widget.ImageView
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -89,6 +91,20 @@ class AuthActivity : ComponentActivity() {
         // Evento para el botón volver
         backButton.setOnClickListener {
 
+            // Limpio el contenido de los inputs
+            nameInput.setText("")
+            lastnameInput.setText("")
+            emailInput.setText("")
+            passwordInput.setText("")
+            rePasswordInput.setText("")
+
+            // Limpio posibles errores
+            nameInput.error = null
+            lastnameInput.error = null
+            emailInput.error = null
+            passwordInput.error = null
+            rePasswordInput.error = null
+
             if(!flag){ //login
                 collapseBlock(expandableBlock, 0.55f, 0.35f)
                 restoreInitialState(expandableBlock, textDisplay, textLogo, registerButton, loginButton, nameInput, lastnameInput, emailInput, passwordInput, rePasswordInput, roleTextView, radioGroup, logInButton, backButton, googleButton)
@@ -128,60 +144,120 @@ class AuthActivity : ComponentActivity() {
         var lastnameInput: EditText = findViewById(R.id.lastnameInput)
         var emailEditText: EditText = findViewById(R.id.emailInput);
         var passwordEditText: EditText = findViewById(R.id.passwordInput);
+        val rePasswordInput: EditText = findViewById(R.id.rePasswordInput)
 
         signUpButton.setOnClickListener {
-            if(emailEditText.text.isEmpty()){
-                validationAlert(1)
-            } else if(emailEditText.text.isNotEmpty() && passwordEditText.text.isEmpty()){
-                validationAlert(0)
+
+            // Limpiar errores anteriores
+            nameInput.error = null
+            lastnameInput.error = null
+            emailEditText.error = null
+            passwordEditText.error = null
+            rePasswordInput.error = null
+
+            // Validación: verificar si los campos están vacíos
+            if (nameInput.text.isEmpty()) {
+                nameInput.error = "El nombre es obligatorio"
+                return@setOnClickListener
             }
 
-            if (emailEditText.text.isNotEmpty() && passwordEditText.text.isNotEmpty()) {
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(
-                    emailEditText.text.toString(),
-                    passwordEditText.text.toString()
-                )
-                    .addOnCompleteListener() {
-                        if (it.isSuccessful) {
-                            val uid = it.result?.user?.uid ?: ""
-                            db.collection("users").document(uid).set(
-                                hashMapOf(
-                                    "id" to uid,
-                                    "name" to nameInput.text.toString(),
-                                    "lastname" to lastnameInput.text.toString(),
-                                    "email" to emailEditText.text.toString(),
-                                    "password" to passwordEditText.text.toString(),
-                                    "role" to selectedRole
-                                )
-                            )
-                            showHome(it.result.user?.email.toString() ?: "", ProviderType.BASIC, it.result.user?.displayName ?: "")
-                        } else {
-                            showAlert()
-                        }
-                    }
+            if (lastnameInput.text.isEmpty()) {
+                lastnameInput.error = "El apellido es obligatorio"
+                return@setOnClickListener
             }
+
+            if (emailEditText.text.isEmpty()) {
+                emailEditText.error = "El correo es obligatorio"
+                return@setOnClickListener
+            }
+
+            // Validación: verificar el formato del correo
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailEditText.text.toString()).matches()) {
+                emailEditText.error = "Formato de correo no válido"
+                return@setOnClickListener
+            }
+
+            // Validación: verificar si la contraseña es obligatoria
+            if (passwordEditText.text.isEmpty()) {
+                passwordEditText.error = "La contraseña es obligatoria"
+                return@setOnClickListener
+            }
+
+            // Validación: verificar longitud de la contraseña
+            if (passwordEditText.text.length < 6) {
+                passwordEditText.error = "La contraseña debe tener al menos 6 caracteres"
+                return@setOnClickListener
+            }
+
+            // Validación: verificar si las contraseñas coinciden
+            if (passwordEditText.text.toString() != rePasswordInput.text.toString()) {
+                rePasswordInput.error = "Las contraseñas no coinciden"
+                return@setOnClickListener
+            }
+
+            FirebaseAuth.getInstance().createUserWithEmailAndPassword(
+                emailEditText.text.toString(),
+                passwordEditText.text.toString()
+            )
+                .addOnCompleteListener() {
+                    if (it.isSuccessful) {
+                        val uid = it.result?.user?.uid ?: ""
+                        db.collection("users").document(uid).set(
+                            hashMapOf(
+                                "id" to uid,
+                                "name" to nameInput.text.toString(),
+                                "lastname" to lastnameInput.text.toString(),
+                                "email" to emailEditText.text.toString(),
+                                "password" to passwordEditText.text.toString(),
+                                "role" to selectedRole
+                            )
+                        )
+                        showHome(it.result.user?.email.toString() ?: "", ProviderType.BASIC, it.result.user?.displayName ?: "")
+                    } else {
+                        showAlert()
+                    }
+                }
         }
 
         loginButton.setOnClickListener {
-            if(emailEditText.text.isEmpty()){
-                validationAlert(1)
-            } else if(emailEditText.text.isNotEmpty() && passwordEditText.text.isEmpty()){
-                validationAlert(0)
+
+            emailEditText.error = null
+            passwordEditText.error = null
+
+            if (emailEditText.text.isEmpty()) {
+                emailEditText.error = "El correo es obligatorio"
+                return@setOnClickListener
             }
 
-            if (emailEditText.text.isNotEmpty() && passwordEditText.text.isNotEmpty()) {
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(
-                    emailEditText.text.toString(),
-                    passwordEditText.text.toString()
-                )
-                    .addOnCompleteListener() {
-                        if (it.isSuccessful) {
-                            showHome(it.result.user?.email.toString() ?: "", ProviderType.BASIC, it.result.user?.displayName ?: "")
-                        } else {
-                            showAlert()
-                        }
-                    }
+            // Validación: verificar el formato del correo
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailEditText.text.toString()).matches()) {
+                emailEditText.error = "Formato de correo no válido"
+                return@setOnClickListener
             }
+
+            // Validación: verificar si la contraseña es obligatoria
+            if (passwordEditText.text.isEmpty()) {
+                passwordEditText.error = "La contraseña es obligatoria"
+                return@setOnClickListener
+            }
+
+            // Validación: verificar longitud de la contraseña
+            if (passwordEditText.text.length < 6) {
+                passwordEditText.error = "La contraseña debe tener al menos 6 caracteres"
+                return@setOnClickListener
+            }
+
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(
+                emailEditText.text.toString(),
+                passwordEditText.text.toString()
+            )
+                .addOnCompleteListener() {
+                    if (it.isSuccessful) {
+                        showHome(it.result.user?.email.toString() ?: "", ProviderType.BASIC, it.result.user?.displayName ?: "")
+                    } else {
+                        showAlert()
+                    }
+                }
         }
 
         googleButton.setOnClickListener {
