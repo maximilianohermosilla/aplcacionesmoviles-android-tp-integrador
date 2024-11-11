@@ -124,14 +124,15 @@ class AuthActivity : ComponentActivity() {
 
     private fun session(){
         val prefs: SharedPreferences = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        val id: String? = prefs.getString("id", null)
         val email: String? = prefs.getString("email", null)
         val provider: String? = prefs.getString("provider", null)
         val name: String? = prefs.getString("name", null)
 
-        if(email != null && provider != null && name != null){
+        if(id != null && email != null && provider != null && name != null){
             var authLayout: ConstraintLayout = findViewById(R.id.constraintLayout);
             authLayout.visibility = View.INVISIBLE;
-            showHome(email, ProviderType.valueOf(provider), name)
+            showHome(id, email, ProviderType.valueOf(provider), name)
         }
     }
 
@@ -212,7 +213,7 @@ class AuthActivity : ComponentActivity() {
                                 "role" to selectedRole
                             )
                         )
-                        showHome(it.result.user?.email.toString() ?: "", ProviderType.BASIC, it.result.user?.displayName ?: "")
+                        showHome(uid, it.result.user?.email.toString() ?: "", ProviderType.BASIC, nameInput.text.toString() + lastnameInput.text.toString())
                     } else {
                         showAlert()
                     }
@@ -253,7 +254,7 @@ class AuthActivity : ComponentActivity() {
             )
                 .addOnCompleteListener() {
                     if (it.isSuccessful) {
-                        showHome(it.result.user?.email.toString() ?: "", ProviderType.BASIC, it.result.user?.displayName ?: "")
+                        showHome(it.result.user?.uid.toString() ?: "", it.result.user?.email.toString() ?: "", ProviderType.BASIC, it.result.user?.displayName ?: "")
                     } else {
                         showAlert()
                     }
@@ -295,8 +296,9 @@ class AuthActivity : ComponentActivity() {
         dialog.show()
     }
 
-    private fun showHome(email: String, provider: ProviderType, name: String){
+    private fun showHome(id: String, email: String, provider: ProviderType, name: String){
         val homeIntent = Intent(this, HomeActivity::class.java).apply{
+            putExtra("id", id)
             putExtra("email", email)
             putExtra("provider", provider.name)
             putExtra("name", name)
@@ -319,7 +321,7 @@ class AuthActivity : ComponentActivity() {
                     FirebaseAuth.getInstance().signInWithCredential(credential)
                         .addOnCompleteListener() {
                             if (it.isSuccessful) {
-                                showHome(account.email ?: "", ProviderType.GOOGLE, account.displayName ?: "")
+                                showHome(account.id.toString() , account.email ?: "",ProviderType.GOOGLE, account.displayName ?: "")
                             } else {
                                 showAlert()
                             }

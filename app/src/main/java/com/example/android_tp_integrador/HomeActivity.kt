@@ -21,13 +21,15 @@ class HomeActivity : ComponentActivity() {
         setContentView(R.layout.activity_home);
 
         val bundle: Bundle? = intent.extras
+        val id: String = bundle?.getString("id").toString()
         val email: String = bundle?.getString("email").toString()
         val provider: String = bundle?.getString("provider").toString()
         val name: String = bundle?.getString("name").toString()
 
-        setup(email ?: "", provider ?: "", name ?: "");
+        setup(id ?: "", email ?: "", provider ?: "", name ?: "");
 
         val prefs: SharedPreferences.Editor = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
+        prefs.putString("id", id)
         prefs.putString("email", email)
         prefs.putString("provider", provider)
         prefs.putString("name", name)
@@ -48,7 +50,7 @@ class HomeActivity : ComponentActivity() {
 
     }
 
-    private fun setup(email: String, provider: String, name: String) {
+    private fun setup(id: String, email: String, provider: String, name: String) {
         title = "Inicio"
         var emailTextView: TextView = findViewById(R.id.emailTextView);
         var providerTextView: TextView = findViewById(R.id.providerTextView);
@@ -56,7 +58,7 @@ class HomeActivity : ComponentActivity() {
         var logoutButton: Button = findViewById(R.id.logoutButton);
 
         emailTextView.text = email;
-        providerTextView.text = provider;
+        providerTextView.text = "$provider $id";
         nameTextView.text = "Bienvenido/a $name";
 
         logoutButton.setOnClickListener{

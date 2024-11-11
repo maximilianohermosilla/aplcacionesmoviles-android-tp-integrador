@@ -46,7 +46,8 @@ class PhotoActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        val bundle: Bundle? = intent.extras
+        val uuid: String = bundle?.getString("id").toString()
         imageContainer = findViewById(R.id.imageContainer)
 
         var openCameraBtn: Button = findViewById(R.id.openCameraButton)
@@ -66,8 +67,8 @@ class PhotoActivity : AppCompatActivity() {
 
         var nextButton: Button = findViewById(R.id.nextBtn);
         nextButton.setOnClickListener {
-            val intent = Intent(this, LocationActivity::class.java)
-            startActivity(intent)
+            //startActivity(intent)
+            showNext(uuid.toString());
         }
     }
 
@@ -84,7 +85,7 @@ class PhotoActivity : AppCompatActivity() {
 
     private fun openCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(packageManager) != null) {
+        if (intent.resolveActivity(this.packageManager) != null) {
             startActivityForResult(intent, CAMERA_REQUEST_CODE)
         } else {
             Toast.makeText(this, "No se puede abrir la cámara", Toast.LENGTH_SHORT).show()
@@ -220,5 +221,11 @@ class PhotoActivity : AppCompatActivity() {
         }
     }
 
+    private fun showNext(id: String){
+        val nextIntent = Intent(this, LocationActivity::class.java).apply{
+            putExtra("id", id)
+        }
 
+        startActivity(nextIntent)
+    }
 }
