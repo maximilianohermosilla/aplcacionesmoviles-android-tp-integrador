@@ -44,8 +44,8 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Cargar el mapa
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.mapContainer) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        //val mapFragment = supportFragmentManager.findFragmentById(R.id.mapContainer) as SupportMapFragment
+        //mapFragment.getMapAsync(this)
 
         // Configurar botones
         val previousButton: Button = findViewById(R.id.previousButton)
@@ -62,7 +62,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         // Pedir permisos de ubicación
-        requestLocationPermission()
+        //requestLocationPermission()
     }
 
     private fun requestLocationPermission() {
@@ -101,17 +101,17 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(map: GoogleMap) {
-        googleMap = map
-        googleMap.uiSettings.isZoomControlsEnabled = true
-
-        // Verificar si ya se concedieron permisos de ubicación
-        if (ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            googleMap.isMyLocationEnabled = true
-            getCurrentLocation()
-        } else {
-            requestLocationPermission()
-        }
+//        googleMap = map
+//        googleMap.uiSettings.isZoomControlsEnabled = true
+//
+//        // Verificar si ya se concedieron permisos de ubicación
+//        if (ActivityCompat.checkSelfPermission(
+//                this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//            googleMap.isMyLocationEnabled = true
+//            getCurrentLocation()
+//        } else {
+//            requestLocationPermission()
+//        }
     }
 
 }

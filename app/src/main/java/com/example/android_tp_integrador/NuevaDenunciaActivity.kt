@@ -42,8 +42,9 @@ class NuevaDenunciaActivity : ComponentActivity() {
                 hashMapOf(
                     "id" to uuid.toString(),
                     "dateCreation" to fechaFormateada.toString(),
-                    "titulo" to tituloEditText.text.toString(),
-                    "descripcion" to descripcionEditText.text.toString(),
+                    "title" to tituloEditText.text.toString(),
+                    "description" to descripcionEditText.text.toString(),
+                    "state" to "Pendiente",
                     "userCreation" to userId.toString()
                 )
             )

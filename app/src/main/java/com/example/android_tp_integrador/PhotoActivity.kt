@@ -1,45 +1,86 @@
 package com.example.android_tp_integrador
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Bundle
-import android.provider.MediaStore
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import android.Manifest
-import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.UploadCallback
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.remoteConfigSettings
+import kotlinx.coroutines.tasks.await
+import java.util.ArrayList
 
 class PhotoActivity : AppCompatActivity() {
 
+    private val db = FirebaseFirestore.getInstance();
     private val CAMERA_PERMISSION_CODE = 100
     private val CAMERA_REQUEST_CODE = 101
     private val GALLERY_REQUEST_CODE = 102
     private val STORAGE_PERMISSION_CODE = 103
 
     private lateinit var imageContainer: ConstraintLayout
-    private val imageList = mutableListOf<Bitmap>() // Lista de imágenes
+    private val imageList = mutableListOf<Bitmap>()
+    private val uriImageList: MutableList<String> = ArrayList()
+    private var cloudinary_name: String = "";
+    private var cloudinary_api_key: String = "";
+    private var cloudinary_api_secret: String = "";
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_photo)
+
+        val remoteConfigs: FirebaseRemoteConfig = Firebase.remoteConfig.apply{
+            setConfigSettingsAsync(remoteConfigSettings {minimumFetchIntervalInSeconds = 60})
+            fetchAndActivate()
+        }
+
+        remoteConfigs.fetch(0)
+        remoteConfigs.activate()
+        cloudinary_name = remoteConfigs.getString("cloudinary_name")
+        cloudinary_api_key = remoteConfigs.getString("cloudinary_api_key")
+        cloudinary_api_secret = remoteConfigs.getString("cloudinary_api_secret")
+
+        val config = mapOf(
+            "cloud_name" to cloudinary_name,
+            "api_key" to cloudinary_api_key,
+            "api_secret" to cloudinary_api_secret
+        )
+
+        MediaManager.init(this, config)
+//        val requestId: String = MediaManager.get().upload("dog.mp4")
+//            .unsigned("preset1")
+//            .option("resource_type", "video")
+//            .option("asset_folder", "pets/dogs/")
+//            .option("public_id", "my_dog")
+//            .option("notification_url", "https://mysite.example.com/notify_endpoint")
+//            .dispatch()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.photoActivity)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -68,6 +109,9 @@ class PhotoActivity : AppCompatActivity() {
         var nextButton: Button = findViewById(R.id.nextBtn);
         nextButton.setOnClickListener {
             //startActivity(intent)
+            db.collection("denuncias").document(uuid).set(hashMapOf(
+                "imagenes" to uriImageList
+            ), SetOptions.merge())
             showNext(uuid.toString());
         }
     }
@@ -125,6 +169,9 @@ class PhotoActivity : AppCompatActivity() {
                     val selectedImageUri: Uri? = data?.data
                     if (selectedImageUri != null) {
                         val bitmap = uriToBitmap(selectedImageUri)
+                        data?.data?.let { uri ->
+                            subirImagen(uri)  // Llamamos a la función para subir la imagen
+                        }
                         if (bitmap != null) {
                             addImageToLayout(bitmap)
                         }
@@ -219,6 +266,36 @@ class PhotoActivity : AppCompatActivity() {
             e.printStackTrace()
             null
         }
+    }
+
+    fun subirImagen(uri: Uri) {
+        MediaManager.get().upload(uri)
+            .option("asset_folder", "aplicacionesmoviles/")
+            .callback(object : UploadCallback {
+                override fun onStart(requestId: String) {
+                    // Proceso de subida iniciado
+                }
+
+                override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {
+                    // Puedes actualizar una barra de progreso si es necesario
+                }
+
+                override fun onSuccess(requestId: String, resultData: Map<*, *>) {
+                    // Subida exitosa, obtener la URL de la imagen
+                    val imageUrl = resultData["url"] as String
+                    uriImageList.add(imageUrl)
+                    println("URL de la imagen: $imageUrl")
+                }
+
+                override fun onError(requestId: String, error: com.cloudinary.android.callback.ErrorInfo) {
+                    // Manejo de error en la subida
+                    println("Error al subir la imagen: ${error.description}")
+                }
+
+                override fun onReschedule(requestId: String, error: com.cloudinary.android.callback.ErrorInfo) {
+                    // Subida reprogramada en caso de error
+                }
+            }).dispatch()
     }
 
     private fun showNext(id: String){
