@@ -110,7 +110,7 @@ class PhotoActivity : AppCompatActivity() {
         nextButton.setOnClickListener {
             //startActivity(intent)
             db.collection("denuncias").document(uuid).set(hashMapOf(
-                "imagenes" to uriImageList
+                "images" to uriImageList
             ), SetOptions.merge())
             showNext(uuid.toString());
         }

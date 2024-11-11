@@ -1,5 +1,6 @@
 package com.example.android_tp_integrador
 
+import SliderAdapter
 import android.content.ClipData
 import android.os.Bundle
 import android.view.DragEvent
@@ -8,7 +9,9 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.android_tp_integrador.DenunciaListFragment.SimpleItemRecyclerViewAdapter
 import com.example.android_tp_integrador.placeholder.PlaceholderContent
 import com.example.android_tp_integrador.databinding.FragmentDenunciaDetailBinding
@@ -33,6 +36,8 @@ class DenunciaDetailFragment : Fragment() {
     lateinit var itemDateTextView: TextView
     lateinit var itemIdTextView: TextView
     lateinit var itemDescriptionTextView: TextView
+    lateinit var viewPager: ViewPager2
+    lateinit var logoImage: ImageView
     private var toolbarLayout: CollapsingToolbarLayout? = null
 
     private var _binding: FragmentDenunciaDetailBinding? = null
@@ -74,6 +79,8 @@ class DenunciaDetailFragment : Fragment() {
         itemDateTextView = binding.denunciaDate!!
         itemIdTextView = binding.denunciaId!!
         itemDescriptionTextView = binding.denunciaDescription!!
+        viewPager = binding.viewPager!!
+        logoImage = binding.logoImage!!
 
         updateContent()
         rootView.setOnDragListener(dragListener)
@@ -102,6 +109,17 @@ class DenunciaDetailFragment : Fragment() {
                             itemDateTextView.text = "Fecha: " + it.dateCreation
                             itemIdTextView.text = it.id
                             itemDescriptionTextView.text = "Descripción: \n\n" + it.description
+
+                            if(it.images != null) {
+                                val adapter = SliderAdapter(it.images)
+                                viewPager.adapter = adapter
+                                viewPager.visibility = View.VISIBLE;
+                                logoImage.visibility = View.INVISIBLE;
+                            }
+                            else{
+                                viewPager.visibility = View.GONE
+                                logoImage.visibility = View.VISIBLE;
+                            }
                         }
                     } else {
                         println("No se pudo convertir el documento a PlaceholderItem.")

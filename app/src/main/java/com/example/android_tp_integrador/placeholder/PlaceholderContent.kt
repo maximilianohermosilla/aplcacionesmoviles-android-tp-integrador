@@ -67,7 +67,7 @@ object PlaceholderContent {
                                val priority: String? = "",
                                val ubication: String? = "",
                                val type: String? = "",
-                               val images: List<Any>? = null,
+                               val images: List<String>? = null,
                                val states: List<Any>? = null,
                                val comments: List<Any>? = null) {
         override fun toString(): String = title

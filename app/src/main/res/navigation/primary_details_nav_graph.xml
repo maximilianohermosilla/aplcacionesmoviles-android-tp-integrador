@@ -12,7 +12,7 @@
         android:name="com.example.android_tp_integrador.DenunciaListFragment"
         android:background="@color/background"
         android:textColor="@color/colorText"
-        android:label="Mis Denuncias">
+        android:label="Denuncias">
         <action
             android:id="@+id/show_denuncia_detail"
             app:destination="@id/denuncia_detail_fragment" />

@@ -127,10 +127,16 @@
                     android:layout_marginBottom="10dp"
                     android:text="Foto(s):"/>
 
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="20dp"
+                    android:layout_height="300dp" />
+
                 <ImageView
                     android:id="@+id/logoImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
                     android:src="@drawable/main_photo"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="20dp"
