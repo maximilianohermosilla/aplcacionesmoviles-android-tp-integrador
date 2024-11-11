@@ -1,5 +1,9 @@
 package com.example.android_tp_integrador.placeholder
 
+import android.content.Context
+import android.content.SharedPreferences
+import com.example.android_tp_integrador.R
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.ArrayList
 import java.util.HashMap
 
@@ -54,8 +58,18 @@ object PlaceholderContent {
     /**
      * A placeholder item representing a piece of content.
      */
-    data class PlaceholderItem(val id: String, val title: String, val description: String, val dateCreation: String?, val dateResolution: String?, val state: String?
-                               , val priority: String?, val ubication: String?, val type: String?, val images: List<Any>?, val states: List<Any>?, val comments: List<Any>?) {
+    data class PlaceholderItem(val id: String = "",
+                               val title: String = "",
+                               val description: String = "",
+                               val dateCreation: String? = "",
+                               val dateResolution: String? = "",
+                               val state: String? = "",
+                               val priority: String? = "",
+                               val ubication: String? = "",
+                               val type: String? = "",
+                               val images: List<Any>? = null,
+                               val states: List<Any>? = null,
+                               val comments: List<Any>? = null) {
         override fun toString(): String = title
     }
 }

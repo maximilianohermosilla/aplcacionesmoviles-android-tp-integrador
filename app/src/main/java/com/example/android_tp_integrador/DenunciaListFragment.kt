@@ -3,6 +3,8 @@ package com.example.android_tp_integrador
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipDescription
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
@@ -20,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android_tp_integrador.placeholder.PlaceholderContent;
 import com.example.android_tp_integrador.databinding.FragmentDenunciaListBinding
 import com.example.android_tp_integrador.databinding.DenunciaListContentBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * A Fragment representing a list of Pings. This fragment
@@ -32,6 +36,7 @@ import com.example.android_tp_integrador.databinding.DenunciaListContentBinding
 
 class DenunciaListFragment : Fragment() {
 
+    private lateinit var id: String
     /**
      * Method to intercept global key events in the
      * item list fragment to trigger keyboard shortcuts
@@ -68,6 +73,8 @@ class DenunciaListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val prefs = requireActivity().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        id = prefs.getString("id", null).toString()
         _binding = FragmentDenunciaListBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -98,10 +105,27 @@ class DenunciaListFragment : Fragment() {
         recyclerView: RecyclerView,
         itemDetailFragmentContainer: View?
     ) {
+        val db = FirebaseFirestore.getInstance();
+        db.collection("denuncias")
+            .whereEqualTo("userCreation", id)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                // Aquí obtienes una lista de documentos que cumplen con la condición
+                val denunciasList = querySnapshot.documents.mapNotNull { document ->
+                    document.toObject(PlaceholderContent.PlaceholderItem::class.java)
+                }
 
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(
-            PlaceholderContent.ITEMS, itemDetailFragmentContainer
-        )
+                // Procesa la lista de denuncias
+                println("Documentos encontrados: ${denunciasList.size}")
+                recyclerView.adapter = SimpleItemRecyclerViewAdapter(
+                    denunciasList, itemDetailFragmentContainer
+                )
+            }
+            .addOnFailureListener { exception ->
+                println("Error al obtener las denuncias: ${exception.message}")
+            }
+        //val list = obtenerDenunciasPorUsuario(id) ?: PlaceholderContent.ITEMS
+
     }
 
     class SimpleItemRecyclerViewAdapter(
@@ -124,7 +148,7 @@ class DenunciaListFragment : Fragment() {
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = values[position]
-            holder.idView.text = item.id
+            holder.textState.text = item.state
             holder.textDate.text = item.dateCreation
             holder.textTitle.text = item.title
             holder.textPriority.text = "Prioridad: " + item.priority
@@ -132,7 +156,7 @@ class DenunciaListFragment : Fragment() {
             with(holder.itemView) {
                 tag = item
                 setOnClickListener { itemView ->
-                    val item = itemView.tag as PlaceholderContent.PlaceholderItem
+                    //val item = itemView.tag as PlaceholderContent.PlaceholderItem
                     val bundle = Bundle()
                     bundle.putString(
                         DenunciaDetailFragment.ARG_ITEM_ID,
@@ -195,7 +219,7 @@ class DenunciaListFragment : Fragment() {
 
         inner class ViewHolder(binding: DenunciaListContentBinding) :
             RecyclerView.ViewHolder(binding.root) {
-            val idView: TextView = binding.idText
+            val textState: TextView = binding.textState
             val textDate: TextView = binding.textDate
             val textTitle: TextView = binding.textTitle
             val textPriority: TextView = binding.textPriority

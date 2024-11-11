@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.example.android_tp_integrador.DenunciaListFragment.SimpleItemRecyclerViewAdapter
 import com.example.android_tp_integrador.placeholder.PlaceholderContent
 import com.example.android_tp_integrador.databinding.FragmentDenunciaDetailBinding
+import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * A fragment representing a single Denuncia detail screen.
@@ -24,6 +26,8 @@ class DenunciaDetailFragment : Fragment() {
      * The placeholder content this fragment is presenting.
      */
     private var item: PlaceholderContent.PlaceholderItem? = null
+
+    lateinit var id: String
 
     lateinit var itemTitleTextView: TextView
     lateinit var itemDateTextView: TextView
@@ -49,13 +53,10 @@ class DenunciaDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         arguments?.let {
             if (it.containsKey(ARG_ITEM_ID)) {
-                // Load the placeholder content specified by the fragment
-                // arguments. In a real-world scenario, use a Loader
-                // to load content from a content provider.
-                item = PlaceholderContent.ITEM_MAP[it.getString(ARG_ITEM_ID)]
+                id = it.getString(ARG_ITEM_ID).toString()
+                //item = PlaceholderContent.ITEM_MAP[it.getString(ARG_ITEM_ID)]
             }
         }
     }
@@ -82,14 +83,39 @@ class DenunciaDetailFragment : Fragment() {
 
     private fun updateContent() {
         toolbarLayout?.title = "Protección Animal" //item?.title
+        val db = FirebaseFirestore.getInstance();
+        db.collection("denuncias")
+            .document(id.toString())
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    // Convierte el documento a un objeto PlaceholderItem
+                    val denuncia =
+                        documentSnapshot.toObject(PlaceholderContent.PlaceholderItem::class.java)
 
+                    // Procesa el objeto obtenido
+                    if (denuncia != null) {
+                        println("Denuncia encontrada: $denuncia")
+                        item = denuncia
+                        item?.let {
+                            itemTitleTextView.text = it.title
+                            itemDateTextView.text = "Fecha: " + it.dateCreation
+                            itemIdTextView.text = it.id
+                            itemDescriptionTextView.text = "Descripción: \n\n" + it.description
+                        }
+                    } else {
+                        println("No se pudo convertir el documento a PlaceholderItem.")
+                    }
+                }
+                else {
+                    println("No se encontró ningún documento con el ID especificado.")
+                }
+            }
+            .addOnFailureListener { exception ->
+                println("Error al obtener las denuncias: ${exception.message}")
+            }
         // Show the placeholder content as text in a TextView.
-        item?.let {
-            itemTitleTextView.text = it.title
-            itemDateTextView.text = "Fecha: " + it.dateCreation
-            itemIdTextView.text = it.id
-            itemDescriptionTextView.text = "Descripción: \n\n" + it.description
-        }
+
     }
 
     companion object {
