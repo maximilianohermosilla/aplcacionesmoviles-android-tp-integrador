@@ -65,7 +65,7 @@ object PlaceholderContent {
                                val dateResolution: String? = "",
                                val state: String? = "",
                                val priority: String? = "",
-                               val ubication: String? = "",
+                               val ubication: Any? = null,
                                val type: String? = "",
                                val images: List<String>? = null,
                                val states: List<Any>? = null,

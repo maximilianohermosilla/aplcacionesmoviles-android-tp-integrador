@@ -110,7 +110,7 @@ class DenunciaDetailFragment : Fragment() {
                             itemIdTextView.text = it.id
                             itemDescriptionTextView.text = "Descripción: \n\n" + it.description
 
-                            if(it.images != null) {
+                            if(it.images != null && it.images.isNotEmpty()) {
                                 val adapter = SliderAdapter(it.images)
                                 viewPager.adapter = adapter
                                 viewPager.visibility = View.VISIBLE;

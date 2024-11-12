@@ -8,6 +8,21 @@
     android:background="@color/background"
     android:textColor="@color/colorText">
 
+    <EditText
+        android:id="@+id/textUbication"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorText"
+        android:ems="10"
+        android:hint="Ubicación" />
+    <!-- Botón para iniciar la búsqueda -->
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buscar" />
+
     <!-- Contenedor del mapa -->
     <fragment
         android:id="@+id/map"
