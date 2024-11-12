@@ -1,6 +1,7 @@
 package com.example.android_tp_integrador
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.health.connect.datatypes.ExerciseRoute
@@ -39,6 +40,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var googleMap: GoogleMap
     private val locationPermissionRequestCode = 1
     private lateinit var uuid: String
+    private lateinit var latLng: LatLng
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +79,13 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         nextButton.setOnClickListener {
+            //Guardado de ubicación (mover a botón)
+            db.collection("denuncias").document(uuid).set(hashMapOf(
+                "ubication" to latLng
+            ), SetOptions.merge())
             // Abrir otra actividad (a definir)
+            val intent = Intent(this, DenunciaDetailHostActivity::class.java)
+            startActivity(intent)
             // startActivity(Intent(this, SiguienteActivity::class.java))
         }
 
@@ -108,12 +116,8 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
             val addresses = geocoder.getFromLocationName(address, 1)
             if (addresses != null && addresses.isNotEmpty()) {
                 val location = addresses[0]
-                val latLng = LatLng(location.latitude, location.longitude)
+                latLng = LatLng(location.latitude, location.longitude)
 
-                //Guardado de ubicación (mover a botón)
-                db.collection("denuncias").document(uuid).set(hashMapOf(
-                    "ubication" to latLng
-                ), SetOptions.merge())
                 // Mueve la cámara a la ubicación encontrada y añade un marcador
                 googleMap.clear()  // Limpia los marcadores anteriores
                 googleMap.addMarker(MarkerOptions().position(latLng).title(address))
