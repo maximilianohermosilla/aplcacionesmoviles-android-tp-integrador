@@ -25,14 +25,16 @@ class HomeActivity : ComponentActivity() {
         val email: String = bundle?.getString("email").toString()
         val provider: String = bundle?.getString("provider").toString()
         val name: String = bundle?.getString("name").toString()
+        val role: String = bundle?.getString("role").toString()
 
-        setup(id ?: "", email ?: "", provider ?: "", name ?: "");
+        setup(id ?: "", email ?: "", provider ?: "", name ?: "", role ?: "");
 
         val prefs: SharedPreferences.Editor = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
         prefs.putString("id", id)
         prefs.putString("email", email)
         prefs.putString("provider", provider)
         prefs.putString("name", name)
+        prefs.putString("role", role)
         prefs.apply()
 
         var denunciasButton: Button = findViewById(R.id.denunciasButton);
@@ -50,7 +52,7 @@ class HomeActivity : ComponentActivity() {
 
     }
 
-    private fun setup(id: String, email: String, provider: String, name: String) {
+    private fun setup(id: String, email: String, provider: String, name: String, role: String) {
         title = "Inicio"
         var emailTextView: TextView = findViewById(R.id.emailTextView);
         var providerTextView: TextView = findViewById(R.id.providerTextView);
@@ -59,7 +61,7 @@ class HomeActivity : ComponentActivity() {
 
         emailTextView.text = email;
         providerTextView.text = "$provider $id";
-        nameTextView.text = "Bienvenido/a $name";
+        nameTextView.text = "Bienvenido/a $name ($role)";
 
         logoutButton.setOnClickListener{
 

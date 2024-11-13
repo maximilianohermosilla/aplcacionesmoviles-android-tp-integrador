@@ -25,19 +25,25 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.PendingIntent.getActivity
 import android.widget.ImageView
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.lifecycle.lifecycleScope
+import com.example.android_tp_integrador.placeholder.PlaceholderContent
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class AuthActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private val GOOGLE_SIGN_IN = 100
     private val db = FirebaseFirestore.getInstance();
     var flag: Boolean = true
+    var selectedRoleButton: Int = -1
     lateinit var selectedRole: String
 
     @SuppressLint("MissingInflatedId")
@@ -61,19 +67,12 @@ class AuthActivity : ComponentActivity() {
         val passwordInput: EditText = findViewById(R.id.passwordInput)
         val rePasswordInput: EditText = findViewById(R.id.rePasswordInput)
         val roleTextView: TextView = findViewById(R.id.roleTextView)
-        val radioGroup: RadioGroup = findViewById(R.id.roleRadioGroup)
         val signUpButton: Button = findViewById(R.id.signUpButton)
         val logInButton: Button = findViewById(R.id.logInButton)
         val backButton: Button = findViewById(R.id.backButton)
         val textDisplay: TextView = findViewById(R.id.textDisplay)
         var googleButton: Button = findViewById(R.id.googleButton);
-
-        // Obtengo el rol seleccionado
-        selectedRole = when (radioGroup.checkedRadioButtonId) {
-            R.id.denuncianteRadioButton -> "Denunciante"
-            R.id.protectorRadioButton -> "Protector"
-            else -> ""
-        }
+        val radioGroup: RadioGroup = findViewById(R.id.roleRadioGroup)
 
         // Eventos para los botones
         registerButton.setOnClickListener {
@@ -128,11 +127,12 @@ class AuthActivity : ComponentActivity() {
         val email: String? = prefs.getString("email", null)
         val provider: String? = prefs.getString("provider", null)
         val name: String? = prefs.getString("name", null)
+        val role: String? = prefs.getString("role", null)
 
-        if(id != null && email != null && provider != null && name != null){
+        if(id != null && email != null && provider != null && name != null && role != null){
             var authLayout: ConstraintLayout = findViewById(R.id.constraintLayout);
             authLayout.visibility = View.INVISIBLE;
-            showHome(id, email, ProviderType.valueOf(provider), name)
+            showHome(id, email, ProviderType.valueOf(provider), name, role)
         }
     }
 
@@ -196,6 +196,17 @@ class AuthActivity : ComponentActivity() {
                 return@setOnClickListener
             }
 
+            // Encuentra el RadioButton seleccionado
+            val radioGroup: RadioGroup = findViewById(R.id.roleRadioGroup)
+            selectedRoleButton = radioGroup.checkedRadioButtonId
+            if (selectedRoleButton != -1) {  // Verifica que haya un RadioButton seleccionado
+                val selectedRadioButton: RadioButton = findViewById(selectedRoleButton)
+
+                // Obtén el texto del RadioButton seleccionado
+                selectedRole = selectedRadioButton.text.toString()
+                println("Seleccionado: $selectedRole")
+            }
+
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(
                 emailEditText.text.toString(),
                 passwordEditText.text.toString()
@@ -213,7 +224,7 @@ class AuthActivity : ComponentActivity() {
                                 "role" to selectedRole
                             )
                         )
-                        showHome(uid, it.result.user?.email.toString() ?: "", ProviderType.BASIC, nameInput.text.toString() + lastnameInput.text.toString())
+                        showHome(uid, it.result.user?.email.toString() ?: "", ProviderType.BASIC, nameInput.text.toString() + lastnameInput.text.toString(), selectedRole)
                     } else {
                         showAlert()
                     }
@@ -254,7 +265,22 @@ class AuthActivity : ComponentActivity() {
             )
                 .addOnCompleteListener() {
                     if (it.isSuccessful) {
-                        showHome(it.result.user?.uid.toString() ?: "", it.result.user?.email.toString() ?: "", ProviderType.BASIC, it.result.user?.displayName ?: "")
+                        lifecycleScope.launch {
+                            val user = obtenerUsuarioPorId(it.result.user?.uid.toString())
+                            if (user != null) {
+                                println("Usuario encontrado: $user")
+                                showHome(
+                                    it.result.user?.uid.toString(),
+                                    user.email ?: "",
+                                    ProviderType.GOOGLE,
+                                    user.name ?: "",
+                                    user.role ?: ""
+                                )
+                            } else {
+                                println("Usuario no encontrado.")
+                                showAlert()
+                            }
+                        }
                     } else {
                         showAlert()
                     }
@@ -296,12 +322,13 @@ class AuthActivity : ComponentActivity() {
         dialog.show()
     }
 
-    private fun showHome(id: String, email: String, provider: ProviderType, name: String){
+    private fun showHome(id: String, email: String, provider: ProviderType, name: String, role: String){
         val homeIntent = Intent(this, HomeActivity::class.java).apply{
             putExtra("id", id)
             putExtra("email", email)
             putExtra("provider", provider.name)
             putExtra("name", name)
+            putExtra("role", role)
         }
 
         startActivity(homeIntent)
@@ -321,7 +348,22 @@ class AuthActivity : ComponentActivity() {
                     FirebaseAuth.getInstance().signInWithCredential(credential)
                         .addOnCompleteListener() {
                             if (it.isSuccessful) {
-                                showHome(account.id.toString() , account.email ?: "",ProviderType.GOOGLE, account.displayName ?: "")
+                                lifecycleScope.launch {
+                                    val user = obtenerUsuarioPorId(account.id.toString())
+                                    if (user != null) {
+                                        println("Usuario encontrado: $user")
+                                        showHome(
+                                        account.id.toString(),
+                                        account.email ?: "",
+                                        ProviderType.GOOGLE,
+                                        account.displayName ?: "",
+                                        user.role ?: ""
+                                    )
+                                    } else {
+                                        println("Usuario no encontrado.")
+                                        showAlert()
+                                    }
+                                }
                             } else {
                                 showAlert()
                             }
@@ -332,6 +374,23 @@ class AuthActivity : ComponentActivity() {
                 showAlert()
             }
 
+        }
+    }
+
+    suspend fun obtenerUsuarioPorId(id: String): PlaceholderContent.UserItem? {
+        return try {
+            val documentSnapshot = db.collection("users")
+                .document(id)
+                .get()
+                .await()
+            if (documentSnapshot.exists()) {
+                documentSnapshot.toObject( PlaceholderContent.UserItem::class.java)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            println("Error al obtener el usuario: ${e.message}")
+            null
         }
     }
 

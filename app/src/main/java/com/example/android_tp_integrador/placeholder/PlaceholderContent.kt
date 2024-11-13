@@ -72,4 +72,13 @@ object PlaceholderContent {
                                val comments: List<Any>? = null) {
         override fun toString(): String = title
     }
+
+    data class UserItem(val id: String = "",
+                               val email: String = "",
+                               val name: String = "",
+                               val lastname: String? = "",
+                               val password: String? = "",
+                               val role: String? = ""){
+        override fun toString(): String = email
+    }
 }
