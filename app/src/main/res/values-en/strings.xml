@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- activity_auth -->
+    <string name="app_name">Animal Care</string>
+    <string name="textLogo">Animal Care</string>
+    <string name="login_button">Log In</string>
+    <string name="register_button">Sign Up</string>
+    <string name="nameInput">Name</string>
+    <string name="lastnameInput">Last name</string>
+    <string name="passwordInput">Password</string>
+    <string name="rePasswordInput">Enter the password again</string>
+    <string name="roleTextView">Role:</string>
+    <string name="denuncianteRadioButton">Claimant</string>
+
+    <!-- activity_home -->
+    <string name="nuevaDenunciaButton">New complaint</string>
+    <string name="denunciasButton">Complaints</string>
+    <string name="logoutButton">Log out</string>
+</resources>

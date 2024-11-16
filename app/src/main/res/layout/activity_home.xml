@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryButton"
             android:textColor="@color/colorText"
-            android:text="Nueva denuncia"/>
+            android:text="@string/nuevaDenunciaButton"/>
 
         <Space
             android:layout_width="match_parent"
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryButton"
             android:textColor="@color/colorText"
-            android:text="Denuncias"/>
+            android:text="@string/denunciasButton"/>
 
         <Space
             android:layout_width="match_parent"
