@@ -36,7 +36,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class DenunciaListFragment : Fragment() {
 
-    private lateinit var id: String
+    private lateinit var userId: String
+    private lateinit var userRole: String
     /**
      * Method to intercept global key events in the
      * item list fragment to trigger keyboard shortcuts
@@ -74,7 +75,9 @@ class DenunciaListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val prefs = requireActivity().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
-        id = prefs.getString("id", null).toString()
+        userId = prefs.getString("id", null).toString()
+        userRole = prefs.getString("role", null).toString()
+
         _binding = FragmentDenunciaListBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -106,26 +109,63 @@ class DenunciaListFragment : Fragment() {
         itemDetailFragmentContainer: View?
     ) {
         val db = FirebaseFirestore.getInstance();
-        db.collection("denuncias")
-            .whereEqualTo("userCreation", id)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                // Aquí obtienes una lista de documentos que cumplen con la condición
-                val denunciasList = querySnapshot.documents.mapNotNull { document ->
-                    document.toObject(PlaceholderContent.PlaceholderItem::class.java)
+
+        if(userRole == "Protector"){
+            val results = mutableListOf<PlaceholderContent.PlaceholderItem>()
+
+            db.collection("denuncias")
+                .whereEqualTo("userAsignation", userId)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    // Aquí obtienes una lista de documentos que cumplen con la condición
+                    val denunciasAsignadasList = querySnapshot.documents.mapNotNull { document ->
+                        document.toObject(PlaceholderContent.PlaceholderItem::class.java)
+                    }
+                    println("Documentos asignados encontrados: ${denunciasAsignadasList.size}")
+                    results.addAll(denunciasAsignadasList)
+
+                    db.collection("denuncias")
+                        .whereEqualTo("state", "Pendiente")
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            val denunciasPendientesList = querySnapshot.documents.mapNotNull { document ->
+                                document.toObject(PlaceholderContent.PlaceholderItem::class.java)
+                            }
+                            println("Documentos pendientes encontrados: ${denunciasPendientesList.size}")
+                            results.addAll(denunciasPendientesList)
+
+                            // Elimina duplicados si es necesario
+                            println("Documentos total: ${results.size}")
+                            val uniqueResults = results.distinctBy { it.id }
+                            println("Documentos a renderizar: ${uniqueResults.size}")
+                            recyclerView.adapter = SimpleItemRecyclerViewAdapter(
+                                uniqueResults, itemDetailFragmentContainer
+                            )
+                        }
                 }
+                .addOnFailureListener { exception ->
+                    println("Error al obtener las denuncias: ${exception.message}")
+                }
+        }else{
+            db.collection("denuncias")
+                .whereEqualTo("userCreation", userId)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    // Aquí obtienes una lista de documentos que cumplen con la condición
+                    val denunciasList = querySnapshot.documents.mapNotNull { document ->
+                        document.toObject(PlaceholderContent.PlaceholderItem::class.java)
+                    }
 
-                // Procesa la lista de denuncias
-                println("Documentos encontrados: ${denunciasList.size}")
-                recyclerView.adapter = SimpleItemRecyclerViewAdapter(
-                    denunciasList, itemDetailFragmentContainer
-                )
-            }
-            .addOnFailureListener { exception ->
-                println("Error al obtener las denuncias: ${exception.message}")
-            }
-        //val list = obtenerDenunciasPorUsuario(id) ?: PlaceholderContent.ITEMS
-
+                    // Procesa la lista de denuncias
+                    println("Documentos encontrados: ${denunciasList.size}")
+                    recyclerView.adapter = SimpleItemRecyclerViewAdapter(
+                        denunciasList, itemDetailFragmentContainer
+                    )
+                }
+                .addOnFailureListener { exception ->
+                    println("Error al obtener las denuncias: ${exception.message}")
+                }
+        }
     }
 
     class SimpleItemRecyclerViewAdapter(

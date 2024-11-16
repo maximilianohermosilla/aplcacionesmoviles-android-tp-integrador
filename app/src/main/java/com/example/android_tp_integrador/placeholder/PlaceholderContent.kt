@@ -66,7 +66,9 @@ object PlaceholderContent {
                                val state: String? = "",
                                val priority: String? = "",
                                val ubication: Any? = null,
-                               val type: String? = "",
+                               val category: String? = "",
+                               val userCreation: String? = "",
+                               val userAsignation: String? = "",
                                val images: List<String>? = null,
                                val states: List<Any>? = null,
                                val comments: List<Any>? = null) {

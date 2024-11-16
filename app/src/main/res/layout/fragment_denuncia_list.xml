@@ -22,14 +22,11 @@
         android:overScrollMode="never"
         android:scrollbars="vertical"
         android:layout_margin="16dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="120dp"
+        android:paddingBottom="50dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.example.android_tp_integrador.DenunciaDetailHostActivity"
         tools:listitem="@layout/denuncia_list_content" />
-
-<!--        <Space-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="16dp"/>-->
 
         <Button
             android:id="@+id/volverButton"
@@ -40,6 +37,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="10dp"
             android:text="Volver" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
