@@ -20,14 +20,19 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
-
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.PendingIntent.getActivity
+import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.Spinner
 import android.widget.TextView
+import android.content.res.Configuration
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -37,11 +42,15 @@ import com.example.android_tp_integrador.placeholder.PlaceholderContent
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.*
 
 class AuthActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private val GOOGLE_SIGN_IN = 100
     private val db = FirebaseFirestore.getInstance();
+    private lateinit var languageSpinner: Spinner
+    private lateinit var prefs: SharedPreferences
+    private var isSpinnerInitialized = false
     var flag: Boolean = true
     var selectedRoleButton: Int = -1
     lateinit var selectedRole: String
@@ -49,6 +58,11 @@ class AuthActivity : ComponentActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Se carga el idioma previamente seleccionado
+        prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        loadLocale()
+
         setContentView(R.layout.activity_auth);
 
         auth = Firebase.auth
@@ -74,7 +88,6 @@ class AuthActivity : ComponentActivity() {
         var googleButton: Button = findViewById(R.id.googleButton);
         val radioGroup: RadioGroup = findViewById(R.id.roleRadioGroup)
 
-        // Eventos para los botones
         registerButton.setOnClickListener {
             flag = true
             expandBlock(expandableBlock, 0.72f)
@@ -87,7 +100,6 @@ class AuthActivity : ComponentActivity() {
             removeButtonsAndShowForm(expandableBlock, textDisplay, textLogo, registerButton, loginButton, nameInput, lastnameInput, emailInput, passwordInput, rePasswordInput, roleTextView, radioGroup, logInButton, backButton, googleButton)
         }
 
-        // Evento para el botón volver
         backButton.setOnClickListener {
 
             // Limpio el contenido de los inputs
@@ -104,14 +116,18 @@ class AuthActivity : ComponentActivity() {
             passwordInput.error = null
             rePasswordInput.error = null
 
-            if(!flag){ //login
+            if(!flag){
                 collapseBlock(expandableBlock, 0.55f, 0.35f)
                 restoreInitialState(expandableBlock, textDisplay, textLogo, registerButton, loginButton, nameInput, lastnameInput, emailInput, passwordInput, rePasswordInput, roleTextView, radioGroup, logInButton, backButton, googleButton)
-            } else { //register
+            } else {
                 collapseBlock(expandableBlock, 0.72f, 0.35f)
                 restoreInitialState(expandableBlock, textDisplay, textLogo, registerButton, loginButton, nameInput, lastnameInput, emailInput, passwordInput, rePasswordInput, roleTextView, radioGroup, signUpButton, backButton, googleButton)
             }
         }
+
+        // Instancia Spiner
+        languageSpinner = findViewById(R.id.languageSpinner)
+        setupLanguageSpinner()
     }
 
     override fun onStart(){
@@ -147,6 +163,9 @@ class AuthActivity : ComponentActivity() {
         var passwordEditText: EditText = findViewById(R.id.passwordInput);
         val rePasswordInput: EditText = findViewById(R.id.rePasswordInput)
 
+        val currentLanguage = getCurrentLanguage()
+        val errorMessages = getErrorMessages(currentLanguage)
+
         signUpButton.setOnClickListener {
 
             // Limpiar errores anteriores
@@ -158,51 +177,46 @@ class AuthActivity : ComponentActivity() {
 
             // Validación: verificar si los campos están vacíos
             if (nameInput.text.isEmpty()) {
-                nameInput.error = "El nombre es obligatorio"
+                nameInput.error = errorMessages["nameRequired"]
                 return@setOnClickListener
             }
 
             if (lastnameInput.text.isEmpty()) {
-                lastnameInput.error = "El apellido es obligatorio"
+                lastnameInput.error = errorMessages["lastnameRequired"]
                 return@setOnClickListener
             }
 
             if (emailEditText.text.isEmpty()) {
-                emailEditText.error = "El correo es obligatorio"
+                emailEditText.error = errorMessages["emailRequired"]
                 return@setOnClickListener
             }
 
             // Validación: verificar el formato del correo
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailEditText.text.toString()).matches()) {
-                emailEditText.error = "Formato de correo no válido"
+                emailEditText.error = errorMessages["emailInvalid"]
                 return@setOnClickListener
             }
 
-            // Validación: verificar si la contraseña es obligatoria
             if (passwordEditText.text.isEmpty()) {
-                passwordEditText.error = "La contraseña es obligatoria"
+                passwordEditText.error = errorMessages["passwordRequired"]
                 return@setOnClickListener
             }
 
-            // Validación: verificar longitud de la contraseña
             if (passwordEditText.text.length < 6) {
-                passwordEditText.error = "La contraseña debe tener al menos 6 caracteres"
+                passwordEditText.error = errorMessages["passwordTooShort"]
                 return@setOnClickListener
             }
 
-            // Validación: verificar si las contraseñas coinciden
             if (passwordEditText.text.toString() != rePasswordInput.text.toString()) {
-                rePasswordInput.error = "Las contraseñas no coinciden"
+                rePasswordInput.error = errorMessages["passwordsDoNotMatch"]
                 return@setOnClickListener
             }
 
-            // Encuentra el RadioButton seleccionado
             val radioGroup: RadioGroup = findViewById(R.id.roleRadioGroup)
             selectedRoleButton = radioGroup.checkedRadioButtonId
             if (selectedRoleButton != -1) {  // Verifica que haya un RadioButton seleccionado
                 val selectedRadioButton: RadioButton = findViewById(selectedRoleButton)
 
-                // Obtén el texto del RadioButton seleccionado
                 selectedRole = selectedRadioButton.text.toString()
                 println("Seleccionado: $selectedRole")
             }
@@ -237,25 +251,28 @@ class AuthActivity : ComponentActivity() {
             passwordEditText.error = null
 
             if (emailEditText.text.isEmpty()) {
-                emailEditText.error = "El correo es obligatorio"
+                emailEditText.error = errorMessages["emailRequired"]
                 return@setOnClickListener
             }
 
             // Validación: verificar el formato del correo
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailEditText.text.toString()).matches()) {
-                emailEditText.error = "Formato de correo no válido"
+                emailEditText.error = errorMessages["emailInvalid"]
                 return@setOnClickListener
             }
 
-            // Validación: verificar si la contraseña es obligatoria
             if (passwordEditText.text.isEmpty()) {
-                passwordEditText.error = "La contraseña es obligatoria"
+                passwordEditText.error = errorMessages["passwordRequired"]
                 return@setOnClickListener
             }
 
-            // Validación: verificar longitud de la contraseña
             if (passwordEditText.text.length < 6) {
-                passwordEditText.error = "La contraseña debe tener al menos 6 caracteres"
+                passwordEditText.error = errorMessages["passwordTooShort"]
+                return@setOnClickListener
+            }
+
+            if (passwordEditText.text.toString() != rePasswordInput.text.toString()) {
+                rePasswordInput.error = errorMessages["passwordsDoNotMatch"]
                 return@setOnClickListener
             }
 
@@ -300,23 +317,34 @@ class AuthActivity : ComponentActivity() {
         }
     }
 
+    private fun getErrorMessages(language: String): Map<String, String> {
+        return if (language == "en") {
+            mapOf(
+                "nameRequired" to "Name is required",
+                "lastnameRequired" to "Last name is required",
+                "emailRequired" to "Email is required",
+                "emailInvalid" to "Invalid email format",
+                "passwordRequired" to "Password is required",
+                "passwordTooShort" to "Password must be at least 6 characters long",
+                "passwordsDoNotMatch" to "Passwords do not match"
+            )
+        } else {
+            mapOf(
+                "nameRequired" to "El nombre es obligatorio",
+                "lastnameRequired" to "El apellido es obligatorio",
+                "emailRequired" to "El correo es obligatorio",
+                "emailInvalid" to "Formato de correo no válido",
+                "passwordRequired" to "La contraseña es obligatoria",
+                "passwordTooShort" to "La contraseña debe tener al menos 6 caracteres",
+                "passwordsDoNotMatch" to "Las contraseñas no coinciden"
+            )
+        }
+    }
+
     private fun showAlert(){
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Error")
         builder.setMessage("Se ha producido un error autenticando al usuario")
-        builder.setPositiveButton("Aceptar", null)
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
-    }
-
-    private fun validationAlert(value: Int){
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Error")
-        if(value == 1){
-            builder.setMessage("El campo email es obligatorio")
-        } else {
-            builder.setMessage("El campo contraseña es obligatorio")
-        }
         builder.setPositiveButton("Aceptar", null)
         val dialog: AlertDialog = builder.create()
         dialog.show()
@@ -453,32 +481,36 @@ class AuthActivity : ComponentActivity() {
 
     // Función para borrar los botones y agregar los inputs
     private fun removeButtonsAndShowForm(
-        expandableBlock: LinearLayout,
-        textDisplay: TextView,
-        textLogo: TextView,
-        registerButton: Button,
-        loginButton: Button,
-        name: EditText,
-        lastName: EditText,
-        email: EditText,
-        password: EditText,
-        rePassword: EditText,
-        roleTextView: TextView,
-        radioGroup: RadioGroup,
-        confirmButton: Button,
-        backButton: Button,
-        googleButton: Button,
+        expandableBlock: LinearLayout, textDisplay: TextView, textLogo: TextView, registerButton: Button, loginButton: Button,
+        name: EditText, lastName: EditText, email: EditText, password: EditText, rePassword: EditText, roleTextView: TextView,
+        radioGroup: RadioGroup, confirmButton: Button, backButton: Button, googleButton: Button,
     ) {
+        val currentLanguage = getCurrentLanguage()
+
         // Oculto los botones
         registerButton.visibility = View.GONE
         loginButton.visibility = View.GONE
         textLogo.visibility = View.INVISIBLE
 
+        if (currentLanguage == "en") {
+            // Lógica para inglés
+            if(!flag){
+                textDisplay.text = "Log in"
+            } else {
+                textDisplay.text = "Create an account"
+            }
+        } else if (currentLanguage == "es") {
+            // Lógica para español
+            if(!flag){
+                textDisplay.text = "Iniciar sesión"
+            } else {
+                textDisplay.text = "Crear una cuenta"
+            }
+        }
+
         if(!flag){
-            textDisplay.text = "Iniciar sesión"
             googleButton.visibility = View.VISIBLE
         } else {
-            textDisplay.text = "Crear una cuenta"
             name.visibility = View.VISIBLE
             lastName.visibility = View.VISIBLE
             rePassword.visibility = View.VISIBLE
@@ -497,21 +529,9 @@ class AuthActivity : ComponentActivity() {
 
     // Funcion para restaurar los elementos previamente eliminados
     private fun restoreInitialState(
-        expandableBlock: LinearLayout,
-        textDisplay: TextView,
-        textLogo: TextView,
-        registerButton: Button,
-        loginButton: Button,
-        name: EditText,
-        lastName: EditText,
-        email: EditText,
-        password: EditText,
-        rePassword: EditText,
-        roleTextView: TextView,
-        radioGroup: RadioGroup,
-        confirmButton: Button,
-        backButton: Button,
-        googleButton: Button
+        expandableBlock: LinearLayout, textDisplay: TextView, textLogo: TextView, registerButton: Button, loginButton: Button,
+        name: EditText, lastName: EditText, email: EditText, password: EditText, rePassword: EditText, roleTextView: TextView,
+        radioGroup: RadioGroup, confirmButton: Button, backButton: Button, googleButton: Button
     ) {
 
         registerButton.visibility = View.VISIBLE
@@ -537,4 +557,93 @@ class AuthActivity : ComponentActivity() {
         return (dp * density).toInt()
     }
 
+    private fun setupLanguageSpinner() {
+        // Lista de idiomas con sus respectivas banderas
+        val languages = listOf(
+            Pair(R.drawable.argentina, "Español"),
+            Pair(R.drawable.united_states, "English")
+        )
+
+        val adapter = LanguageAdapter(this, languages)
+        languageSpinner.adapter = adapter
+
+        // Establece idioma previamente seleccionado
+        val savedLanguage = prefs.getString("selectedLanguage", "es")
+        languageSpinner.setSelection(if (savedLanguage == "en") 1 else 0)
+
+        languageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (isSpinnerInitialized) {
+                    when (position) {
+                        0 -> setLocale("es")
+                        1 -> setLocale("en")
+                    }
+                } else {
+                    isSpinnerInitialized = true
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Si no se selecciona nada, no se hace nada
+            }
+        }
+    }
+
+    private fun setLocale(languageCode: String) {
+        val currentLanguage = prefs.getString("selectedLanguage", "")
+        if (currentLanguage != languageCode) { // Solo recargar si el idioma es diferente
+            val locale = Locale(languageCode)
+            Locale.setDefault(locale)
+            val config = resources.configuration
+            config.setLocale(locale)
+            resources.updateConfiguration(config, resources.displayMetrics)
+
+            // Guardar configuración en SharedPreferences
+            with(prefs.edit()) {
+                putString("selectedLanguage", languageCode)
+                apply()
+            }
+
+            // Recargar actividad para aplicar el cambio
+            recreate()
+        }
+    }
+
+    private fun loadLocale() {
+        val languageCode = prefs.getString("selectedLanguage", "es")
+        val locale = Locale(languageCode ?: "es")
+        Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
+    }
+
+    private fun getCurrentLanguage(): String {
+        return prefs.getString("selectedLanguage", "es") ?: "es"
+    }
+
+}
+
+class LanguageAdapter(context: Context, private val languages: List<Pair<Int, String>>) : ArrayAdapter<Pair<Int, String>>(context, 0, languages) {
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        return createView(position, convertView, parent)
+    }
+
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+        return createView(position, convertView, parent)
+    }
+
+    private fun createView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.spinner_item_with_flag, parent, false)
+
+        val flagImage = view.findViewById<ImageView>(R.id.flagImage)
+        val languageText = view.findViewById<TextView>(R.id.languageText)
+
+        val (imageRes, languageName) = languages[position]
+        flagImage.setImageResource(imageRes)
+        languageText.text = languageName
+
+        return view
+    }
 }

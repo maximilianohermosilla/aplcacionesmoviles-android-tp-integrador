@@ -7,4 +7,20 @@
     <string name="title_denuncia_detail">Denuncia Detail</string>
     <string name="google_maps_key">AIzaSyAq23o3EQDkD1C28a5I42DIZ5Iy_5z4PU0</string>
     <string name="title_activity_maps">MapsActivity</string>
+
+    <!-- activity_auth -->
+    <string name="textLogo">Ciudado de Animales</string>
+    <string name="login_button">Iniciar Sesión</string>
+    <string name="register_button">Registrarse</string>
+    <string name="nameInput">Nombre</string>
+    <string name="lastnameInput">Apellido</string>
+    <string name="passwordInput">Contraseña</string>
+    <string name="rePasswordInput">Ingrese la contraseña nuevamente</string>
+    <string name="roleTextView">Rol:</string>
+    <string name="denuncianteRadioButton">Denunciante</string>
+
+    <!-- activity_home -->
+    <string name="nuevaDenunciaButton">Nueva denuncia</string>
+    <string name="denunciasButton">Denuncias</string>
+    <string name="logoutButton">Cerrar sesión</string>
 </resources>
