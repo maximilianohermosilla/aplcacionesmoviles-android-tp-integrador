@@ -76,6 +76,6 @@
             android:layout_height="wrap_content"
             android:background="@color/colorSecondaryButton"
             android:textColor="@color/colorText"
-            android:text="Cerrar sesión" />
+            android:text="@string/logoutButton" />
     </LinearLayout>
 </LinearLayout>

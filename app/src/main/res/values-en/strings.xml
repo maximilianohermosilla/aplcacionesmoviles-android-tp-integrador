@@ -2,6 +2,7 @@
 <resources>
     <!-- activity_auth -->
     <string name="app_name">Animal Care</string>
+    <string name="prefs_file">android_tp_integrador.PREFERENCE_FILE_KEY</string>
     <string name="textLogo">Animal Care</string>
     <string name="login_button">Log In</string>
     <string name="register_button">Sign Up</string>
@@ -11,6 +12,11 @@
     <string name="rePasswordInput">Enter the password again</string>
     <string name="roleTextView">Role:</string>
     <string name="denuncianteRadioButton">Claimant</string>
+    <string name="title_activity_denuncia_detail_host">DenunciaDetailHostActivity</string>
+    <string name="title_denuncia_list">Complaints</string>
+    <string name="title_denuncia_detail">Complaint Detail</string>
+    <string name="google_maps_key">AIzaSyAq23o3EQDkD1C28a5I42DIZ5Iy_5z4PU0</string>
+    <string name="title_activity_maps">MapsActivity</string>
 
     <!-- activity_home -->
     <string name="nuevaDenunciaButton">New complaint</string>

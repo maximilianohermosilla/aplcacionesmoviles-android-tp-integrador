@@ -90,7 +90,7 @@ class AuthActivity : ComponentActivity() {
 
         registerButton.setOnClickListener {
             flag = true
-            expandBlock(expandableBlock, 0.72f)
+            expandBlock(expandableBlock, 0.68f)
             removeButtonsAndShowForm(expandableBlock, textDisplay, textLogo, registerButton, loginButton, nameInput, lastnameInput, emailInput, passwordInput, rePasswordInput, roleTextView, radioGroup, signUpButton, backButton, googleButton)
         }
 
@@ -271,10 +271,10 @@ class AuthActivity : ComponentActivity() {
                 return@setOnClickListener
             }
 
-            if (passwordEditText.text.toString() != rePasswordInput.text.toString()) {
-                rePasswordInput.error = errorMessages["passwordsDoNotMatch"]
-                return@setOnClickListener
-            }
+//            if (passwordEditText.text.toString() != rePasswordInput.text.toString()) {
+//                rePasswordInput.error = errorMessages["passwordsDoNotMatch"]
+//                return@setOnClickListener
+//            }
 
             FirebaseAuth.getInstance().signInWithEmailAndPassword(
                 emailEditText.text.toString(),
@@ -428,11 +428,11 @@ class AuthActivity : ComponentActivity() {
         val constraintSet = ConstraintSet()
         constraintSet.clone(parentLayout)
 
-        val heightInPx = dpToPx(195) // 200dp a px
+        val heightInPx = dpToPx(180) // 200dp a px
         // Cambiar el tamaño del ImageView utilizando ConstraintSet
         constraintSet.constrainHeight(R.id.logoImage, heightInPx) // Nueva altura en píxeles
 
-        val marginInPx = dpToPx(10) // Cambiar a tu valor deseado en dp
+        val marginInPx = dpToPx(70) // Cambiar a tu valor deseado en dp
         // Cambiar el marginTop del ImageView
         constraintSet.setMargin(R.id.logoImage, ConstraintSet.TOP, marginInPx)
 
