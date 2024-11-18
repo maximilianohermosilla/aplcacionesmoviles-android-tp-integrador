@@ -38,7 +38,6 @@ class DenunciaListFragment : Fragment() {
 
     private lateinit var userId: String
     private lateinit var userRole: String
-    val priorityText: String = getString(R.string.priorityText)
     /**
      * Method to intercept global key events in the
      * item list fragment to trigger keyboard shortcuts
