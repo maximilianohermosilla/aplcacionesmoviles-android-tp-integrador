@@ -81,7 +81,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         nextButton.setOnClickListener {
             //Guardado de ubicación (mover a botón)
             db.collection("denuncias").document(uuid).set(hashMapOf(
-                "ubication" to latLng
+                "ubication" to latLng.toString().replace("lat/lng: (", "").replace(")", "")
             ), SetOptions.merge())
             // Abrir otra actividad (a definir)
             val intent = Intent(this, DenunciaDetailHostActivity::class.java)

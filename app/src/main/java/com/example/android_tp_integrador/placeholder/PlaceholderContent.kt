@@ -6,6 +6,7 @@ import com.example.android_tp_integrador.R
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.ArrayList
 import java.util.HashMap
+import com.google.android.gms.maps.model.LatLng
 
 /**
  * Helper class for providing sample content for user interfaces created by

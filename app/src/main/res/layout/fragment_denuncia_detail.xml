@@ -130,8 +130,8 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager"
                     android:layout_width="match_parent"
-                    android:layout_marginBottom="20dp"
-                    android:layout_height="300dp" />
+                    android:layout_height="300dp"
+                    android:layout_marginBottom="20dp" />
 
                 <ImageView
                     android:id="@+id/logoImage"
@@ -141,6 +141,25 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="20dp"
                     tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/ubicationLabel"
+                    style="?android:attr/textAppearanceLarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:padding="16dp"
+                    android:text="Ubicación:"
+                    android:textColor="@color/colorTextSecondary" />
+
+                <!-- Contenedor del mapa -->
+                <fragment
+                    android:id="@+id/mapFragment"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="16dp" />
             </LinearLayout>
 
             <View
@@ -149,10 +168,7 @@
                 android:layout_weight="1"
                 android:background="#000000" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_weight="1"
-                android:layout_height="50dp" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -12,9 +12,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.viewpager2.widget.ViewPager2
-import com.example.android_tp_integrador.DenunciaListFragment.SimpleItemRecyclerViewAdapter
+import com.google.android.gms.maps.model.LatLng
 import com.example.android_tp_integrador.placeholder.PlaceholderContent
 import com.example.android_tp_integrador.databinding.FragmentDenunciaDetailBinding
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 
 /**
@@ -23,7 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore
  * in two-pane mode (on larger screen devices) or self-contained
  * on handsets.
  */
-class DenunciaDetailFragment : Fragment() {
+class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
 
     /**
      * The placeholder content this fragment is presenting.
@@ -36,15 +41,20 @@ class DenunciaDetailFragment : Fragment() {
     lateinit var itemDateTextView: TextView
     lateinit var itemIdTextView: TextView
     lateinit var itemDescriptionTextView: TextView
+    lateinit var ubicationLabel: TextView
     lateinit var viewPager: ViewPager2
     lateinit var logoImage: ImageView
     private var toolbarLayout: CollapsingToolbarLayout? = null
+    private var mapFragment: View? = null
 
     private var _binding: FragmentDenunciaDetailBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var googleMap: GoogleMap
+    private lateinit var location: LatLng
 
     private val dragListener = View.OnDragListener { v, event ->
         if (event.action == DragEvent.ACTION_DROP) {
@@ -78,12 +88,17 @@ class DenunciaDetailFragment : Fragment() {
         itemTitleTextView = binding.denunciaTitle!!
         itemDateTextView = binding.denunciaDate!!
         itemIdTextView = binding.denunciaId!!
+        ubicationLabel = binding.ubicationLabel!!
         itemDescriptionTextView = binding.denunciaDescription!!
         viewPager = binding.viewPager!!
         logoImage = binding.logoImage!!
+        mapFragment = rootView.findViewById<View>(R.id.mapFragment)!!
 
         updateContent()
         rootView.setOnDragListener(dragListener)
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         return rootView
     }
@@ -120,6 +135,22 @@ class DenunciaDetailFragment : Fragment() {
                                 viewPager.visibility = View.GONE
                                 logoImage.visibility = View.VISIBLE;
                             }
+
+                            if (it.ubication != null) {
+                                // Usa la ubicación para centrar el mapa
+                                val location: String = it.ubication.toString().replace("\"", "");
+                                val latitude = location.split(",").first()
+                                val longitude = location.split(",").last()
+                                val currentLatLng = LatLng(latitude.toDouble(), longitude.toDouble())
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+                                googleMap.addMarker(MarkerOptions().position(currentLatLng).title("Ubicación actual"))
+                                mapFragment!!.visibility = View.VISIBLE
+                                ubicationLabel!!.visibility = View.VISIBLE
+                            }
+                            else{
+                                mapFragment!!.visibility = View.GONE
+                                ubicationLabel!!.visibility = View.GONE
+                            }
                         }
                     } else {
                         println("No se pudo convertir el documento a PlaceholderItem.")
@@ -147,5 +178,11 @@ class DenunciaDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onMapReady(map: GoogleMap) {
+        println("Inicializando onMapReady")
+        googleMap = map
+        googleMap.uiSettings.isZoomControlsEnabled = true
     }
 }
