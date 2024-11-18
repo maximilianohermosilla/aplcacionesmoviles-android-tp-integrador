@@ -30,6 +30,7 @@ import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import android.content.res.Configuration
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -40,6 +41,9 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.lifecycleScope
 import com.example.android_tp_integrador.placeholder.PlaceholderContent
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingService
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
@@ -90,7 +94,7 @@ class AuthActivity : ComponentActivity() {
 
         registerButton.setOnClickListener {
             flag = true
-            expandBlock(expandableBlock, 0.68f)
+            expandBlock(expandableBlock, 0.72f)
             removeButtonsAndShowForm(expandableBlock, textDisplay, textLogo, registerButton, loginButton, nameInput, lastnameInput, emailInput, passwordInput, rePasswordInput, roleTextView, radioGroup, signUpButton, backButton, googleButton)
         }
 
@@ -128,6 +132,7 @@ class AuthActivity : ComponentActivity() {
         // Instancia Spiner
         languageSpinner = findViewById(R.id.languageSpinner)
         setupLanguageSpinner()
+
     }
 
     override fun onStart(){
@@ -270,11 +275,6 @@ class AuthActivity : ComponentActivity() {
                 passwordEditText.error = errorMessages["passwordTooShort"]
                 return@setOnClickListener
             }
-
-//            if (passwordEditText.text.toString() != rePasswordInput.text.toString()) {
-//                rePasswordInput.error = errorMessages["passwordsDoNotMatch"]
-//                return@setOnClickListener
-//            }
 
             FirebaseAuth.getInstance().signInWithEmailAndPassword(
                 emailEditText.text.toString(),
@@ -428,11 +428,11 @@ class AuthActivity : ComponentActivity() {
         val constraintSet = ConstraintSet()
         constraintSet.clone(parentLayout)
 
-        val heightInPx = dpToPx(180) // 200dp a px
+        val heightInPx = dpToPx(195) // 200dp a px
         // Cambiar el tamaño del ImageView utilizando ConstraintSet
         constraintSet.constrainHeight(R.id.logoImage, heightInPx) // Nueva altura en píxeles
 
-        val marginInPx = dpToPx(70) // Cambiar a tu valor deseado en dp
+        val marginInPx = dpToPx(10) // Cambiar a tu valor deseado en dp
         // Cambiar el marginTop del ImageView
         constraintSet.setMargin(R.id.logoImage, ConstraintSet.TOP, marginInPx)
 
@@ -621,7 +621,6 @@ class AuthActivity : ComponentActivity() {
     private fun getCurrentLanguage(): String {
         return prefs.getString("selectedLanguage", "es") ?: "es"
     }
-
 }
 
 class LanguageAdapter(context: Context, private val languages: List<Pair<Int, String>>) : ArrayAdapter<Pair<Int, String>>(context, 0, languages) {
@@ -647,3 +646,25 @@ class LanguageAdapter(context: Context, private val languages: List<Pair<Int, St
         return view
     }
 }
+
+public fun guardarTokenEnFirestore(userId: String, role: String, token: String) {
+    val db = FirebaseFirestore.getInstance()
+    val userRef = db.collection("users").document(userId)
+
+    val userData = hashMapOf(
+        "id" to userId,
+        "role" to role,
+        "fcmToken" to token
+    )
+
+    userRef.set(userData, SetOptions.merge())
+        .addOnSuccessListener {
+            println("Token FCM guardado correctamente en Firestore.")
+        }
+        .addOnFailureListener { exception ->
+            println("Error al guardar el token FCM en Firestore: ${exception.message}")
+        }
+}
+
+
+

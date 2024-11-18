@@ -67,6 +67,18 @@
 
         <Space
             android:layout_width="match_parent"
+            android:layout_height="8dp" />
+
+        <Button
+            android:id="@+id/sendNotificationButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:textColor="@color/colorText"
+            android:text="Enviar Notificación" />
+
+        <Space
+            android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="16dp" />
 
