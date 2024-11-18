@@ -22,4 +22,23 @@
     <string name="nuevaDenunciaButton">New complaint</string>
     <string name="denunciasButton">Complaints</string>
     <string name="logoutButton">Log out</string>
+
+
+    <!-- nueva_denuncia -->
+    <string name="titleText">Title</string>
+    <string name="descriptionText">Description</string>
+    <string name="backText">Back</string>
+    <string name="cancelText">Cancel</string>
+    <string name="nextText">Next</string>
+    <string name="openCameraText">Camera</string>
+    <string name="openGalleryText">Gallery</string>
+    <string name="ubicationText">Ubication</string>
+    <string name="searchText">Search</string>
+    <string name="endText">Finish</string>
+    <string name="imageText">Images</string>
+    <string name="assignText">Assign</string>
+    <string name="dateText">Date</string>
+    <string name="priorityText">Priority</string>
+    <string name="stateText">State</string>
+    <string name="detailText">Detail</string>
 </resources>

@@ -25,14 +25,14 @@
             android:id="@+id/openCameraButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Abrir Cámara"
+            android:text="@string/openCameraText"
             android:layout_marginEnd="16dp" />
 
         <Button
             android:id="@+id/openGaleryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Abrir Galería" />
+            android:text="@string/openGalleryText" />
     </LinearLayout>
 
     <!-- Contenedor para los botones 2 -->
@@ -53,14 +53,14 @@
             android:id="@+id/previousBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Anterior"
+            android:text="@string/backText"
             android:layout_marginEnd="16dp"/>
 
         <Button
             android:id="@+id/nextBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Siguiente" />
+            android:text="@string/nextText" />
     </LinearLayout>
 
     <!-- Contenedor de las imágenes -->

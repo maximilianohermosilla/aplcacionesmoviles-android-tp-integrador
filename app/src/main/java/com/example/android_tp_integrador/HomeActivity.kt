@@ -87,13 +87,9 @@ class HomeActivity : ComponentActivity() {
 
     private fun setup(id: String, email: String, provider: String, name: String, role: String) {
         title = "Inicio"
-        var emailTextView: TextView = findViewById(R.id.emailTextView);
-        var providerTextView: TextView = findViewById(R.id.providerTextView);
         var nameTextView: TextView = findViewById(R.id.nameTextView);
         var logoutButton: Button = findViewById(R.id.logoutButton);
 
-        emailTextView.text = email;
-        providerTextView.text = "$provider $id";
         nameTextView.text = "Bienvenido/a $name ($role)";
 
         logoutButton.setOnClickListener{

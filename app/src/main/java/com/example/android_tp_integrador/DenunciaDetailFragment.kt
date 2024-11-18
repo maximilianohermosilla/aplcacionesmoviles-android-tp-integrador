@@ -104,7 +104,12 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun updateContent() {
-        toolbarLayout?.title = "Protección Animal" //item?.title
+        val title: String = getString(R.string.textLogo)
+        val descriptionText: String = getString(R.string.descriptionText)
+        val dateText: String = getString(R.string.dateText)
+
+
+        toolbarLayout?.title = title //"Protección Animal" //item?.title
         val db = FirebaseFirestore.getInstance();
         db.collection("denuncias")
             .document(id.toString())
@@ -121,9 +126,9 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                         item = denuncia
                         item?.let {
                             itemTitleTextView.text = it.title
-                            itemDateTextView.text = "Fecha: " + it.dateCreation
+                            itemDateTextView.text = dateText + ": " + it.dateCreation
                             itemIdTextView.text = it.id
-                            itemDescriptionTextView.text = "Descripción: \n\n" + it.description
+                            itemDescriptionTextView.text = descriptionText + ": \n\n" + it.description
 
                             if(it.images != null && it.images.isNotEmpty()) {
                                 val adapter = SliderAdapter(it.images)

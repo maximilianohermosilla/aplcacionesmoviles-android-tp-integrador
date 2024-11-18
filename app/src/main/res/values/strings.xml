@@ -23,4 +23,23 @@
     <string name="nuevaDenunciaButton">Nueva denuncia</string>
     <string name="denunciasButton">Denuncias</string>
     <string name="logoutButton">Cerrar sesión</string>
+
+
+    <!-- nueva_denuncia -->
+    <string name="titleText">Título</string>
+    <string name="descriptionText">Descripción</string>
+    <string name="backText">Volver</string>
+    <string name="cancelText">Cancelar</string>
+    <string name="nextText">Siguiente</string>
+    <string name="openCameraText">Cámara</string>
+    <string name="openGalleryText">Galería</string>
+    <string name="ubicationText">Ubicación</string>
+    <string name="searchText">Buscar</string>
+    <string name="endText">Finalizar</string>
+    <string name="imageText">Imágenes</string>
+    <string name="assignText">Asignar</string>
+    <string name="dateText">Fecha</string>
+    <string name="priorityText">Prioridad</string>
+    <string name="stateText">Estado</string>
+    <string name="detailText">Detalle</string>
 </resources>

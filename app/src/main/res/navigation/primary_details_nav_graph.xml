@@ -12,7 +12,7 @@
         android:name="com.example.android_tp_integrador.DenunciaListFragment"
         android:background="@color/background"
         android:textColor="@color/colorText"
-        android:label="Denuncias">
+        android:label="@string/denunciasButton">
         <action
             android:id="@+id/show_denuncia_detail"
             app:destination="@id/denuncia_detail_fragment" />
@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/denuncia_detail_fragment"
         android:name="com.example.android_tp_integrador.DenunciaDetailFragment"
-        android:label="Detalle"
+        android:label="@string/detailText"
         android:background="@color/background"
         android:textColor="@color/colorText"
         tools:layout="@layout/fragment_denuncia_detail">

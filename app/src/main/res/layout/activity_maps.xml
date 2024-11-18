@@ -15,13 +15,13 @@
         android:textColor="@color/colorText"
         android:textColorHint="@color/colorText"
         android:ems="10"
-        android:hint="Ubicación" />
+        android:hint="@string/ubicationText" />
     <!-- Botón para iniciar la búsqueda -->
     <Button
         android:id="@+id/btnSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Buscar" />
+        android:text="@string/searchText" />
 
     <!-- Contenedor del mapa -->
     <fragment
@@ -43,13 +43,13 @@
             android:id="@+id/previousButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Anterior" />
+            android:text="@string/backText" />
 
         <Button
             android:id="@+id/nextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Finalizar"
+            android:text="@string/endText"
             android:layout_marginStart="32dp" />
     </LinearLayout>
 

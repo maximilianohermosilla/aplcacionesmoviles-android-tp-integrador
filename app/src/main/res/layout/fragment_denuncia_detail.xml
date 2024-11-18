@@ -125,7 +125,7 @@
                     android:textColor="@color/colorTextSecondary"
                     android:layout_weight="1"
                     android:layout_marginBottom="10dp"
-                    android:text="Foto(s):"/>
+                    android:text="@string/imageText"/>
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager"
@@ -150,7 +150,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp"
                     android:padding="16dp"
-                    android:text="Ubicación:"
+                    android:text="@string/ubicationText"
                     android:textColor="@color/colorTextSecondary" />
 
                 <!-- Contenedor del mapa -->
