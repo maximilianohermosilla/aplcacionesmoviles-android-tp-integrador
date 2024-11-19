@@ -17,6 +17,7 @@
     <string name="title_denuncia_detail">Complaint Detail</string>
     <string name="google_maps_key">AIzaSyAq23o3EQDkD1C28a5I42DIZ5Iy_5z4PU0</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="saveText">Save</string>
 
     <!-- activity_home -->
     <string name="nuevaDenunciaButton">New complaint</string>

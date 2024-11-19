@@ -123,7 +123,7 @@ class DenunciaListFragment : Fragment() {
                 }
                 R.id.nav_user -> {
                     println("nav_user presionado")
-                    startActivity(Intent(activity, HomeActivity::class.java))
+                    startActivity(Intent(activity, ProfileActivity::class.java))
 //                    if (this !is NotificationsActivity) {
 //                        startActivity(Intent(this, NotificationsActivity::class.java))
 //                    }

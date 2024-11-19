@@ -170,7 +170,7 @@ class HomeActivity : ComponentActivity() {
                 }
                 R.id.nav_user -> {
                     println("nav_user presionado")
-                    startActivity(Intent(this, HomeActivity::class.java))
+                    startActivity(Intent(this, ProfileActivity::class.java))
 //                    if (this !is NotificationsActivity) {
 //                        startActivity(Intent(this, NotificationsActivity::class.java))
 //                    }
