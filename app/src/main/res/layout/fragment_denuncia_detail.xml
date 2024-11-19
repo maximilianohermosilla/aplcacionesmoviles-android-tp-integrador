@@ -94,6 +94,27 @@
                     tools:context="com.example.android_tp_integrador.DenunciaDetailFragment" />
             </LinearLayout>
 
+            <Button
+                android:id="@+id/assignButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:background="@color/colorPrimaryButton"
+                android:textColor="@color/colorText"
+                android:text="@string/assignText" />
+
+            <TextView
+                android:id="@+id/assignedUser"
+                style="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="20dp"
+                android:textIsSelectable="true"
+                android:textColor="@color/colorTextSecondary"
+                tools:context="com.example.android_tp_integrador.DenunciaDetailFragment" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -145,6 +166,11 @@
                     android:layout_marginBottom="20dp"
                     tools:ignore="MissingConstraints" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000000" />
+
                 <TextView
                     android:id="@+id/ubicationLabel"
                     style="?android:attr/textAppearanceLarge"
@@ -171,7 +197,42 @@
                 android:layout_weight="1"
                 android:background="#000000" />
 
+            <LinearLayout
+                android:id="@+id/chatContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    style="?android:attr/textAppearanceLarge"
+                    android:padding="16dp"
+                    android:textColor="@color/colorTextSecondary"
+                    android:layout_weight="1"
+                    android:text="Chat"/>
 
+
+                <EditText
+                    android:id="@+id/descripcionEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextSecondary"
+                    android:textColorHint="@color/colorTextSecondary"
+                    android:layout_margin="10dp"
+                    android:ems="10"
+                    android:hint="@string/descriptionText" />
+
+                <Button
+                    android:id="@+id/saveButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@color/colorPrimaryButton"
+                    android:text="@string/saveText"
+                    android:textColor="@color/colorText" />
+            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

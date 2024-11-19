@@ -5,10 +5,12 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.transition.Visibility
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
@@ -33,7 +35,8 @@ enum class ProviderType{
 class HomeActivity : ComponentActivity() {
     lateinit var userToken: String // Token del mismo usuario
     //private val userToken = "TU_TOKEN_DE_FCM" // Token del dispositivo del usuario al que se le quiere enviar la notificación
-    private val bearerToken = "ya29.c.c0ASRK0Gap4sxqQZ8Y9w_5Z0oeZkKS6kFVDbGWq8fnK1zAzfzo2U3sbsXjNnbSs-taKnviq651HNuxxlAeN1yprYqTGMSIBtg3OUUUErqy98awuTe83ZVJg9wHxMn2LiezDgSpS9EaMXyj4AcbkAx5dvzU4Obv9kfSlqaqhGk4Vl2RqoXqm9BlH-BXGXgNYVF5TSy1O7PySyXhcOTOOl-vi2xSQPUuyICPb506B3UkmHKmEp93xN7-NS7KXBhU5c5nHU5ycEC9UYEgEpXcYxlVGVWr8MDc9gFk_WH3oYg4a_jIC4pjzAB59ZGanUxfjhoTizDCCsZuQe0AvxsPUdpaCYrBZgZIwbIhzS-cdImnjFSJC0TlocewWeW_BQG387P1vrY_0dqJyyeq2Jl5lnJ7bMzMMU1t_9zya8ZbSh0fxsh1ZFlVIoWt3xWXjtkg7ZVnMvMJSlbeyvxlW3bm_ftyF1rVvomrdm1obf8W8fnWkig1I08apBczmvhfJdwtjldc42nInSOb0nQnc3-75vYcxvXbVjRX-8Mdohtly1WJdJVxMq8aJcZycbrppkghBgwpQURB4l-cqYiWq6MVsM6vcSgzBoo3UFVvt5nkR1FU93j5jFfm2uxryMcoQ9QqOuyShutSk7xMfa5FF-1wt8_UmYph6r8ySs3jsu9eu6dtrpt290rI1F1McJlt959JwQu0Zzk0MIRRjVFQBnhuYiQdmd8FyMd393epF8vkotBJu2OfU5dwpo93gtx0zfjjv9xRSJOihBemulz9r1vMoJSXY--4XuMU_BvRh1x2UZd1iaiy2W3bb9foqhexX4ir9-nU-gViniose9Y1oSUgm7_3yelpsvfQlQWUnljV5I1gb5s482_ZrQVM35-bXRiX4zh_tek51VeFxhaMaBOV9XSl9uB4yw83SRn3ByBU-jXave8zf_p6y_5BQvZqUp_Jy-ic-Ote_XfIkqWMoS93z73y2d5xVx3Z0ZBnqubVzuo54I9pRni4QYybv77" // Reemplaza con tu token válido generado previamente
+    // Reemplaza con tu token válido generado previamente
+    private val bearerToken = "ya29.c.c0ASRK0Gag0ZMykdzFa maelFQteTnvHKNaGM0szVLifT15ef2gIiMO59Q-l2UiiJK90C8cjHqYxmt0snpz7o0leWvAFK3BCBbpzPh1_QENFHUMvMi08pK96MctE0_iiYMb03JMl1YmZ7UyzMW0Le7C5I_r0msyml7I2n0GeCSwyJtsSOuzJcMPAw67nWzFRx8mbTyOf4vyTivM4701noDU1HZuZv-ofOz8l7qAWE0g54IkBU8QgfUWBbuaOG_26Uwdil2GuxQpdxsFIMCgsH0OGqBwpBN4vo1ExUw4yalZ2-MuXu1gSuEPjbkMnsGI1G12gFSlB_PBEhurUc2bZYT05YnOUQ9NNBKf_wYAlrSRmtO5pxSkVfY3BJPG_ZUgE387CZmZ1mIwhz7SWz5aM1Xl7cQ59fMhock4mu9y6woZ0e5fBMyqlOWnpQlRpeYqenXFgRXlwFZnIi8zwdJYa7nvcXip6eOo1z-YYRBpk5UmdeUYRvBM0lxzgjF4JMBtg98c-OZrkkOsmpihya9dftQfooiiqwZ290vuVfna5MYBgVq0cqhIsOl25pV_fyWlrIiUcycb-Oe2Yaw-w8zZZhr2uJ6tW3wIBjOYWdgyyOrpBtVs18b9y123ftfOxgsYv_Ba7j7-rnQXa9-rcI7ZIqk_iSidcn0Ywydv1p2VYIojs4pWMWkWWeaYtd6jmr-rJ6yU_Ml_aqIaq1pVnJmJRSkzrI5kfRIqc-4z2wF9kjlbmiUzfwo4tuu7xniXM6SJ8U92QOWjgZV1mFfx59OZWU2i_QxoXS4FZU20uBnhdIof__v73Ivg5epFaFffrt1-Xintdwzb75kjcxUQX767t8IJnVkpObfbjxu-W6sS14unz2oi9-kXS-msXJpVj9nkroqtJ96nw9Ywaai9m67W1Xiu4IYcr2rqsOtr436Bray6n9g1Zz2FbpzrbQ-qeoewVB8wQweoItMnqaM-zeUFyp_1uYcr_Z_R_4vzrFqmUW6Ovoda2681tQqwOc87f"
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -59,6 +62,11 @@ class HomeActivity : ComponentActivity() {
         prefs.putString("name", name)
         prefs.putString("role", role)
         prefs.apply()
+
+        if(role == "Protector"){
+            var nuevaDenunciaButton: Button = findViewById(R.id.nuevaDenunciaButton);
+            nuevaDenunciaButton.visibility = View.GONE
+        }
 
         var denunciasButton: Button = findViewById(R.id.denunciasButton);
         denunciasButton.setOnClickListener {

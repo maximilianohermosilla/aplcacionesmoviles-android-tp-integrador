@@ -10,7 +10,7 @@
     <string name="saveText">Guardar</string>
 
     <!-- activity_auth -->
-    <string name="textLogo">Ciudado de Animales</string>
+    <string name="textLogo">Protección Animal</string>
     <string name="login_button">Iniciar Sesión</string>
     <string name="register_button">Registrarse</string>
     <string name="nameInput">Nombre</string>

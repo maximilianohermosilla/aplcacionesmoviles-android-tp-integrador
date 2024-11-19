@@ -2,6 +2,7 @@ package com.example.android_tp_integrador
 
 import SliderAdapter
 import android.content.ClipData
+import android.content.Context
 import android.os.Bundle
 import android.view.DragEvent
 import androidx.fragment.app.Fragment
@@ -9,7 +10,9 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.maps.model.LatLng
@@ -21,6 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 /**
  * A fragment representing a single Denuncia detail screen.
@@ -34,18 +38,24 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
      * The placeholder content this fragment is presenting.
      */
     private var item: PlaceholderContent.PlaceholderItem? = null
+    val db = FirebaseFirestore.getInstance();
 
     lateinit var id: String
+    var userId: String = ""
+    var userRole: String = ""
 
     lateinit var itemTitleTextView: TextView
     lateinit var itemDateTextView: TextView
     lateinit var itemIdTextView: TextView
     lateinit var itemDescriptionTextView: TextView
+    lateinit var assignedUser: TextView
     lateinit var ubicationLabel: TextView
     lateinit var viewPager: ViewPager2
     lateinit var logoImage: ImageView
     private var toolbarLayout: CollapsingToolbarLayout? = null
     private var mapFragment: View? = null
+    lateinit var assignButton: Button
+    lateinit var chatContainer: LinearLayout
 
     private var _binding: FragmentDenunciaDetailBinding? = null
 
@@ -74,6 +84,9 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                 //item = PlaceholderContent.ITEM_MAP[it.getString(ARG_ITEM_ID)]
             }
         }
+        val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        userRole = sharedPreferences.getString("role", null).toString()
+        userId = sharedPreferences.getString("id", null).toString()
     }
 
     override fun onCreateView(
@@ -90,15 +103,30 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
         itemIdTextView = binding.denunciaId!!
         ubicationLabel = binding.ubicationLabel!!
         itemDescriptionTextView = binding.denunciaDescription!!
+        assignedUser = binding.assignedUser!!
         viewPager = binding.viewPager!!
         logoImage = binding.logoImage!!
         mapFragment = rootView.findViewById<View>(R.id.mapFragment)!!
+        assignButton = binding.assignButton!!
+        chatContainer = binding.chatContainer!!
 
         updateContent()
         rootView.setOnDragListener(dragListener)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+
+        assignButton.setOnClickListener {
+            if(userId != ""){
+                db.collection("denuncias").document(id).set(hashMapOf(
+                    "userAsignation" to userId.toString(),
+                    "state" to "Asignado"
+                ), SetOptions.merge())
+            }
+            assignedUser.text = userId ?: "Sin asignar"
+            assignButton.visibility = View.GONE
+        }
 
         return rootView
     }
@@ -108,9 +136,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
         val descriptionText: String = getString(R.string.descriptionText)
         val dateText: String = getString(R.string.dateText)
 
-
         toolbarLayout?.title = title //"Protección Animal" //item?.title
-        val db = FirebaseFirestore.getInstance();
         db.collection("denuncias")
             .document(id.toString())
             .get()
@@ -129,6 +155,24 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                             itemDateTextView.text = dateText + ": " + it.dateCreation
                             itemIdTextView.text = it.id
                             itemDescriptionTextView.text = descriptionText + ": \n\n" + it.description
+
+                            println(it.userAsignation)
+                            if(userRole == "Protector" && it.userAsignation == ""){
+                                println("Es protector y no tiene asignacion")
+                                assignButton.visibility = View.VISIBLE
+                            }
+                            else{
+                                println("No es protector o esta asignado")
+                                assignedUser.text = it.userAsignation ?: "Pendiente"
+                                assignButton.visibility = View.GONE
+                            }
+
+                            if(it.userCreation == userId || it.userAsignation == userId){
+                                chatContainer.visibility = View.VISIBLE
+                            }
+                            else{
+                                chatContainer.visibility = View.GONE
+                            }
 
                             if(it.images != null && it.images.isNotEmpty()) {
                                 val adapter = SliderAdapter(it.images)
