@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.cloudinary.android)
     implementation(libs.volley)
+    implementation(libs.firebase.messaging.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

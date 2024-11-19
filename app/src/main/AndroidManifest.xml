@@ -32,7 +32,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Androidtpintegrador"
+        android:theme="@style/Theme.AppCompat.Light"
         tools:targetApi="31" >
 
         <!--

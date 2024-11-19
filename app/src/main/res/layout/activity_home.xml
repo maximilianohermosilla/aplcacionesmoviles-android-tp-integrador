@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="@color/background"
     android:textColor="@color/colorText"
     android:orientation="vertical">
@@ -12,20 +11,18 @@
         android:layout_width="match_parent"
         android:textColor="@color/colorText"
         android:textColorHint="@color/colorText"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
+        android:padding="16dp"
         android:text="Nombre" />
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="8dp" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="8dp" />
+        android:layout_height="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="16dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -74,4 +71,11 @@
             android:textColor="@color/colorText"
             android:text="@string/logoutButton" />
     </LinearLayout>
+
+    <include
+        layout="@layout/bottom_nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        />
 </LinearLayout>

@@ -3,64 +3,83 @@
     android:id="@+id/authLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="@color/background"
     android:textColor="@color/colorText"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/tituloEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorText"
-        android:textColorHint="@color/colorText"
-        android:ems="10"
-        android:hint="@string/titleText" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="8dp" />
-
-    <EditText
-        android:id="@+id/descripcionEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorText"
-        android:textColorHint="@color/colorText"
-        android:ems="10"
-        android:hint="@string/descriptionText" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="8dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:padding="16dp"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/cancelarButton"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/tituloEditText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/colorSecondaryButton"
             android:textColor="@color/colorText"
-            android:text="@string/cancelText" />
+            android:textColorHint="@color/colorText"
+            android:ems="10"
+            android:hint="@string/titleText" />
 
         <Space
-            android:layout_width="8dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0" />
+            android:layout_width="match_parent"
+            android:layout_height="8dp" />
 
-        <Button
-            android:id="@+id/siguienteButton"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/descripcionEditText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/colorPrimaryButton"
             android:textColor="@color/colorText"
-            android:text="@string/nextText" />
+            android:textColorHint="@color/colorText"
+            android:ems="10"
+            android:hint="@string/descriptionText" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancelarButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorSecondaryButton"
+                android:textColor="@color/colorText"
+                android:text="@string/cancelText" />
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0" />
+
+            <Button
+                android:id="@+id/siguienteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryButton"
+                android:textColor="@color/colorText"
+                android:text="@string/nextText" />
+
+        </LinearLayout>
     </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="16dp" />
+
+    <include
+        layout="@layout/bottom_nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        />
 </LinearLayout>

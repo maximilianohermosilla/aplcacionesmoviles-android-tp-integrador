@@ -1,0 +1,29 @@
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorTextSecondary"
+    android:id="@+id/menu_bottom">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/icon_home"
+        android:title="Inicio"
+        />
+
+    <item
+        android:id="@+id/nav_list"
+        android:icon="@drawable/icon_list"
+        android:title="Denuncias"
+        />
+
+    <item
+        android:id="@+id/nav_notification"
+        android:icon="@drawable/icon_notification"
+        android:title="Notificaciones"
+        />
+
+    <item
+        android:id="@+id/nav_user"
+        android:icon="@drawable/icon_user"
+        android:title="Perfil"
+        />
+</menu>
