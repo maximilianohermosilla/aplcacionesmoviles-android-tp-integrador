@@ -25,6 +25,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.UploadCallback
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
@@ -56,6 +57,7 @@ class PhotoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_photo)
+        setupNavigation()
 
         val remoteConfigs: FirebaseRemoteConfig = Firebase.remoteConfig.apply{
             setConfigSettingsAsync(remoteConfigSettings {minimumFetchIntervalInSeconds = 60})
@@ -308,5 +310,37 @@ class PhotoActivity : AppCompatActivity() {
         }
 
         startActivity(nextIntent)
+    }
+
+    fun setupNavigation(){
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    println("Home presionado")
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    true
+                }
+                R.id.nav_list -> {
+                    println("nav_list presionado")
+                    startActivity(Intent(this, DenunciaDetailHostActivity::class.java))
+                    true
+                }
+                R.id.nav_notification -> {
+                    println("nav_notification presionado")
+                    startActivity(Intent(this, NuevaDenunciaActivity::class.java))
+                    true
+                }
+                R.id.nav_user -> {
+                    println("nav_user presionado")
+                    startActivity(Intent(this, HomeActivity::class.java))
+//                    if (this !is NotificationsActivity) {
+//                        startActivity(Intent(this, NotificationsActivity::class.java))
+//                    }
+                    true
+                }
+                else -> false
+            }
+        }
     }
 }

@@ -23,6 +23,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 enum class ProviderType{
     BASIC,
@@ -39,12 +40,15 @@ class HomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home);
 
+        val preferences: SharedPreferences = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+
         val bundle: Bundle? = intent.extras
-        val id: String = bundle?.getString("id").toString()
-        val email: String = bundle?.getString("email").toString()
-        val provider: String = bundle?.getString("provider").toString()
-        val name: String = bundle?.getString("name").toString()
-        val role: String = bundle?.getString("role").toString()
+
+        val id: String = preferences.getString("id", null) ?: bundle?.getString("id").toString()
+        val email: String = preferences.getString("email", null) ?: bundle?.getString("email").toString()
+        val provider: String = preferences.getString("provider", null) ?: bundle?.getString("provider").toString()
+        val name: String = preferences.getString("name", null) ?: bundle?.getString("name").toString()
+        val role: String = preferences.getString("role", null) ?: bundle?.getString("role").toString()
 
         setup(id ?: "", email ?: "", provider ?: "", name ?: "", role ?: "");
 
@@ -101,6 +105,8 @@ class HomeActivity : ComponentActivity() {
             FirebaseAuth.getInstance().signOut()
             onBackPressed()
         }
+
+        setupNavigation()
     }
 
     private fun sendNotificationToSelf(token: String) {
@@ -143,4 +149,35 @@ class HomeActivity : ComponentActivity() {
         requestQueue.add(jsonObjectRequest)
     }
 
+    fun setupNavigation(){
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    println("Home presionado")
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    true
+                }
+                R.id.nav_list -> {
+                    println("nav_list presionado")
+                    startActivity(Intent(this, DenunciaDetailHostActivity::class.java))
+                    true
+                }
+                R.id.nav_notification -> {
+                    println("nav_notification presionado")
+                    startActivity(Intent(this, NuevaDenunciaActivity::class.java))
+                    true
+                }
+                R.id.nav_user -> {
+                    println("nav_user presionado")
+                    startActivity(Intent(this, HomeActivity::class.java))
+//                    if (this !is NotificationsActivity) {
+//                        startActivity(Intent(this, NotificationsActivity::class.java))
+//                    }
+                    true
+                }
+                else -> false
+            }
+        }
+    }
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android_tp_integrador.placeholder.PlaceholderContent;
 import com.example.android_tp_integrador.databinding.FragmentDenunciaListBinding
 import com.example.android_tp_integrador.databinding.DenunciaListContentBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -99,6 +101,36 @@ class DenunciaListFragment : Fragment() {
         volverButton.setOnClickListener {
             //parentFragmentManager.popBackStack()
             requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
+        val bottomNavigationView = view.findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    println("Home presionado")
+                    startActivity(Intent(getActivity(), HomeActivity::class.java))
+                    true
+                }
+                R.id.nav_list -> {
+                    println("nav_list presionado")
+                    startActivity(Intent(getActivity(), DenunciaDetailHostActivity::class.java))
+                    true
+                }
+                R.id.nav_notification -> {
+                    println("nav_notification presionado")
+                    startActivity(Intent(getActivity(), NuevaDenunciaActivity::class.java))
+                    true
+                }
+                R.id.nav_user -> {
+                    println("nav_user presionado")
+                    startActivity(Intent(activity, HomeActivity::class.java))
+//                    if (this !is NotificationsActivity) {
+//                        startActivity(Intent(this, NotificationsActivity::class.java))
+//                    }
+                    true
+                }
+                else -> false
+            }
         }
 
         setupRecyclerView(recyclerView, itemDetailFragmentContainer)
@@ -271,4 +303,5 @@ class DenunciaListFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }

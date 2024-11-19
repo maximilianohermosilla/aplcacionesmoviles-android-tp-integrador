@@ -28,6 +28,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import java.util.Locale
@@ -44,6 +45,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val bundle: Bundle? = intent.extras
         uuid = bundle?.getString("id").toString()
 
@@ -91,24 +93,8 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
             // startActivity(Intent(this, SiguienteActivity::class.java))
         }
 
+        setupNavigation()
         println("Maps inicializado")
-
-        // Configurar botones
-//        val previousButton: Button = findViewById(R.id.previousButton)
-//        val nextButton: Button = findViewById(R.id.nextButton)
-//
-//        previousButton.setOnClickListener {
-//            // Volver a la actividad anterior
-//            //finish()
-//        }
-//
-//        nextButton.setOnClickListener {
-//            // Abrir otra actividad (a definir)
-//            // startActivity(Intent(this, SiguienteActivity::class.java))
-//        }
-
-        // Pedir permisos de ubicación
-//        requestLocationPermission()
     }
 
     private fun searchLocation(address: String) {
@@ -228,6 +214,38 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
             } else {
                 // Muestra un mensaje si el permiso es denegado
                 // Puedes mostrar un diálogo aquí si deseas explicar por qué necesitas el permiso
+            }
+        }
+    }
+
+    private fun setupNavigation(){
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    println("Home presionado")
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    true
+                }
+                R.id.nav_list -> {
+                    println("nav_list presionado")
+                    startActivity(Intent(this, DenunciaDetailHostActivity::class.java))
+                    true
+                }
+                R.id.nav_notification -> {
+                    println("nav_notification presionado")
+                    startActivity(Intent(this, NuevaDenunciaActivity::class.java))
+                    true
+                }
+                R.id.nav_user -> {
+                    println("nav_user presionado")
+                    startActivity(Intent(this, HomeActivity::class.java))
+//                    if (this !is NotificationsActivity) {
+//                        startActivity(Intent(this, NotificationsActivity::class.java))
+//                    }
+                    true
+                }
+                else -> false
             }
         }
     }
