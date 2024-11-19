@@ -40,7 +40,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var googleMap: GoogleMap
     private val locationPermissionRequestCode = 1
     private lateinit var uuid: String
-    private lateinit var latLng: LatLng
+    private var latLng: LatLng? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,9 +80,11 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
         nextButton.setOnClickListener {
             //Guardado de ubicación (mover a botón)
-            db.collection("denuncias").document(uuid).set(hashMapOf(
-                "ubication" to latLng.toString().replace("lat/lng: (", "").replace(")", "")
-            ), SetOptions.merge())
+            if(latLng != null){
+                db.collection("denuncias").document(uuid).set(hashMapOf(
+                    "ubication" to latLng.toString().replace("lat/lng: (", "").replace(")", "")
+                ), SetOptions.merge())
+            }
             // Abrir otra actividad (a definir)
             val intent = Intent(this, DenunciaDetailHostActivity::class.java)
             startActivity(intent)
@@ -120,8 +122,8 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 // Mueve la cámara a la ubicación encontrada y añade un marcador
                 googleMap.clear()  // Limpia los marcadores anteriores
-                googleMap.addMarker(MarkerOptions().position(latLng).title(address))
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                googleMap.addMarker(MarkerOptions().position(latLng!!).title(address))
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng!!, 15f))
             } else {
                 Toast.makeText(this, "Dirección no encontrada", Toast.LENGTH_SHORT).show()
             }

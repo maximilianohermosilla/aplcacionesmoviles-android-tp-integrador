@@ -1,18 +1,19 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/photoActivity"
-    android:background="@color/background"
-    android:orientation="vertical"
-    android:textColor="@color/colorText"
-    >
+<?xml version="1.0" encoding="utf-8"?>
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/photoActivity"
+        android:background="@color/background"
+        android:textColor="@color/colorText">
+
+    <LinearLayout
+        android:id="@+id/photoActivity_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical">
 
         <!-- Contenedor para los botones -->
@@ -34,15 +35,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:background="@color/colorPrimaryButton"
+                android:textColor="@color/colorText"
+                android:drawableStart="@drawable/icon_camera"
+                android:drawableTint="@color/textColor"
+                android:drawablePadding="5dp"
+                android:padding="20dp"
                 android:text="@string/openCameraText" />
 
             <Button
                 android:id="@+id/openGaleryButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryButton"
+                android:textColor="@color/colorText"
+                android:drawableStart="@drawable/icon_photo"
+                android:drawableTint="@color/textColor"
+                android:drawablePadding="5dp"
+                android:padding="20dp"
                 android:text="@string/openGalleryText" />
         </LinearLayout>
 
+
+        <!-- Placeholder de imágen -->
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:src="@drawable/main_photo"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            tools:ignore="MissingConstraints" />
 
         <!-- Contenedor de las imágenes -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -200,6 +223,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+<!--        <Space-->
+<!--            android:id="@+id/spaceBottom"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="16dp"/>-->
+
         <!-- Contenedor para los botones 2 -->
         <LinearLayout
             android:id="@+id/buttonContainer2"
@@ -220,12 +250,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:background="@color/colorSecondaryButton"
+                android:textColor="@color/colorText"
+                android:padding="20dp"
                 android:text="@string/backText" />
 
             <Button
                 android:id="@+id/nextBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryButton"
+                android:textColor="@color/colorText"
+                android:padding="20dp"
                 android:text="@string/nextText" />
         </LinearLayout>
 
@@ -233,7 +269,9 @@
 
     </LinearLayout>
 
+
     <Space
+        android:id="@+id/space2Bottom"
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="16dp"/>
@@ -242,7 +280,6 @@
         layout="@layout/bottom_nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         />
 
 </LinearLayout>

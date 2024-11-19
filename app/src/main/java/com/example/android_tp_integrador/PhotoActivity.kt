@@ -43,6 +43,7 @@ class PhotoActivity : AppCompatActivity() {
     private val STORAGE_PERMISSION_CODE = 103
 
     private lateinit var imageContainer: ConstraintLayout
+    private lateinit var logoImage: ImageView
     private val imageList = mutableListOf<Bitmap>()
     private val uriImageList: MutableList<String> = ArrayList()
     private var cloudinary_name: String = "";
@@ -90,6 +91,7 @@ class PhotoActivity : AppCompatActivity() {
         val bundle: Bundle? = intent.extras
         val uuid: String = bundle?.getString("id").toString()
         imageContainer = findViewById(R.id.imageContainer)
+        logoImage = findViewById(R.id.logoImage)
 
         var openCameraBtn: Button = findViewById(R.id.openCameraButton)
         openCameraBtn.setOnClickListener {
@@ -185,6 +187,8 @@ class PhotoActivity : AppCompatActivity() {
     private fun addImageToLayout(bitmap: Bitmap) {
         val resizedBitmap = resizeBitmap(bitmap, 500, 500)
         imageList.add(resizedBitmap)
+
+        logoImage.visibility = View.GONE;
 
         refreshImageViews()
     }

@@ -6,9 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:textColor="@color/colorText"
-    android:layout_marginStart="@dimen/container_horizontal_margin"
-    android:layout_marginEnd="@dimen/container_horizontal_margin">
+    android:textColor="@color/colorText">
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -17,13 +15,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/volverButton"
         app:layout_constraintHeight_max="0dp"
         android:overScrollMode="never"
         android:scrollbars="vertical"
-        android:layout_margin="16dp"
-        android:layout_marginBottom="120dp"
-        android:paddingBottom="50dp"
+        android:paddingBottom="125dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.example.android_tp_integrador.DenunciaDetailHostActivity"
         tools:listitem="@layout/denuncia_list_content" />
@@ -34,10 +31,19 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryButton"
             android:textColor="@color/colorText"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+            app:layout_constraintBottom_toBottomOf="@id/denuncia_list"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="60dp"
+            android:layout_margin="10dp"
             android:text="@string/backText" />
 
+        <include
+            layout="@layout/bottom_nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 </androidx.constraintlayout.widget.ConstraintLayout>
