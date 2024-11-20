@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="8dp"
+    android:background="@color/background"
     android:gravity="center_vertical">
 
     <ImageView
@@ -21,5 +22,6 @@
         android:layout_height="wrap_content"
         android:text="Español"
         android:textSize="16sp"
-        android:textColor="#000" />
+        android:background="@color/background"
+        android:textColor="@color/colorText" />
 </LinearLayout>
