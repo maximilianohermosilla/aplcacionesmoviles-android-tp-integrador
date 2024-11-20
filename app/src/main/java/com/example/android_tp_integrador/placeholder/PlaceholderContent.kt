@@ -68,6 +68,8 @@ object PlaceholderContent {
                                val priority: String? = "",
                                val ubication: Any? = null,
                                val category: String? = "",
+                               val address: String? = "",
+                               val addressCity: String? = "",
                                val userCreation: String? = "",
                                val userAsignation: String? = "",
                                val images: List<String>? = null,
@@ -80,6 +82,7 @@ object PlaceholderContent {
                                val email: String = "",
                                val name: String = "",
                                val lastname: String? = "",
+                               val phone: String? = "",
                                val password: String? = "",
                                val role: String? = ""){
         override fun toString(): String = email

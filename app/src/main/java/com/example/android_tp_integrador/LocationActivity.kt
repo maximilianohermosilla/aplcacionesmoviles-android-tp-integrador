@@ -3,30 +3,24 @@ package com.example.android_tp_integrador
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
-import android.health.connect.datatypes.ExerciseRoute
 import android.location.Geocoder
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.android_tp_integrador.databinding.ActivityMapsBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapFragment
-import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -41,7 +35,10 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var googleMap: GoogleMap
     private val locationPermissionRequestCode = 1
     private lateinit var uuid: String
+    private var addressFull: String? = ""
+    private var addressGeneral: String? = ""
     private var latLng: LatLng? = null
+    private var currentMarker: Marker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +81,9 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
             //Guardado de ubicación (mover a botón)
             if(latLng != null){
                 db.collection("denuncias").document(uuid).set(hashMapOf(
-                    "ubication" to latLng.toString().replace("lat/lng: (", "").replace(")", "")
+                    "ubication" to latLng.toString().replace("lat/lng: (", "").replace(")", ""),
+                    "address" to addressFull,
+                    "addressCity" to addressGeneral,
                 ), SetOptions.merge())
             }
             // Abrir otra actividad (a definir)
@@ -106,6 +105,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
                 val location = addresses[0]
                 latLng = LatLng(location.latitude, location.longitude)
 
+                fetchAddressFromLatLng(latLng!!)
                 // Mueve la cámara a la ubicación encontrada y añade un marcador
                 googleMap.clear()  // Limpia los marcadores anteriores
                 googleMap.addMarker(MarkerOptions().position(latLng!!).title(address))
@@ -132,23 +132,12 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
             // Solicita el permiso de ubicación
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionRequestCode)
         }
-        // Agrega un marcador en una ubicación específica (ej. Sidney) y mueve la cámara
-//        val sydney = LatLng(-34.0, 151.0)
-//        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 10f))
 
-        //googleMap.uiSettings.isZoomControlsEnabled = true
-        //googleMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+        googleMap.setOnMapClickListener { latLng ->
+            addMarkerAtPosition(latLng)
+        }
 
         println("on Map Ready finalizado")
-        // Verificar si ya se concedieron permisos de ubicación
-//        if (ActivityCompat.checkSelfPermission(
-//                this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//            googleMap.isMyLocationEnabled = true
-//            getCurrentLocation()
-//        } else {
-//            requestLocationPermission()
-//        }
     }
 
     private fun requestLocationPermission() {
@@ -173,18 +162,6 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-//    private fun getCurrentLocation() {
-//        if (ActivityCompat.checkSelfPermission(
-//                this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-//                if (location != null) {
-//                    val userLocation = LatLng(location.latitude, location.longitude)
-//                    googleMap.addMarker(MarkerOptions().position(userLocation).title("Tu ubicación"))
-//                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
-//                }
-//            }
-//        }
-//    }
     // Obtiene la ubicación actual del usuario
     private fun getCurrentLocation() {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
@@ -215,6 +192,59 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
                 // Muestra un mensaje si el permiso es denegado
                 // Puedes mostrar un diálogo aquí si deseas explicar por qué necesitas el permiso
             }
+        }
+    }
+
+    private fun addMarkerAtPosition(position: LatLng) {
+        // Borra el marcador anterior si existe
+        currentMarker?.remove()
+
+        // Crea un nuevo marcador en la posición seleccionada
+        currentMarker = googleMap.addMarker(
+            MarkerOptions()
+                .position(position)
+                .title("Seleccionado")
+                .snippet("Lat: ${position.latitude}, Lng: ${position.longitude}")
+        )
+        latLng = LatLng(position.latitude, position.longitude)
+
+        fetchAddressFromLatLng(latLng!!)
+        // Centra el mapa en la posición seleccionada
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15f))
+    }
+
+    private fun fetchAddressFromLatLng(position: LatLng) {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        try {
+            // Obtén una lista de direcciones (el primer resultado suele ser el más preciso)
+            val addresses = geocoder.getFromLocation(position.latitude, position.longitude, 1)
+
+            if (!addresses.isNullOrEmpty()) {
+                val address = addresses[0]
+                val fullAddress = address.getAddressLine(0) // Dirección completa
+                val locality = address.locality // Localidad o ciudad
+                val province = address.adminArea // Provincia
+                val country = address.countryName // País
+                val postalCode = address.postalCode // Código postal
+                addressFull =  fullAddress;
+                addressGeneral = "$locality, $province"
+
+                // Mostrar la dirección en un Toast (puedes usar otros métodos para mostrarla)
+                Toast.makeText(
+                    this,
+                    "Dirección: $fullAddress\nCiudad: $locality\nProvincia: $province\nPaís: $country\nCP: $postalCode",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                // También puedes usar estos datos para actualizar el marcador
+                currentMarker?.snippet = fullAddress
+                currentMarker?.showInfoWindow()
+            } else {
+                Toast.makeText(this, "No se encontró la dirección para esta ubicación.", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error al obtener la dirección: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -15,6 +15,7 @@
     <string name="register_button">Registrarse</string>
     <string name="nameInput">Nombre</string>
     <string name="lastnameInput">Apellido</string>
+    <string name="phoneInput">Teléfono</string>
     <string name="passwordInput">Contraseña</string>
     <string name="rePasswordInput">Ingrese la contraseña nuevamente</string>
     <string name="roleTextView">Rol:</string>

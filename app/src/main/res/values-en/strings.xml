@@ -8,6 +8,7 @@
     <string name="register_button">Sign Up</string>
     <string name="nameInput">Name</string>
     <string name="lastnameInput">Last name</string>
+    <string name="phoneInput">Phone</string>
     <string name="passwordInput">Password</string>
     <string name="rePasswordInput">Enter the password again</string>
     <string name="roleTextView">Role:</string>

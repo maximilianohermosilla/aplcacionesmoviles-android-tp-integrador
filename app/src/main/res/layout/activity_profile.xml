@@ -25,65 +25,117 @@
             android:layout_marginBottom="20dp"
             tools:ignore="MissingConstraints" />
 
+
+        <!-- Name Input -->
         <EditText
-            android:id="@+id/tituloEditText"
+            android:id="@+id/nameInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:hint="@string/nameInput"
+            android:textColorHint="@color/hideColor"
             android:textColor="@color/colorText"
-            android:textColorHint="@color/colorText" />
+            android:backgroundTint="@color/textColor"
+            android:layout_marginTop="16dp"/>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="8dp" />
-
+        <!-- Lastname Input -->
         <EditText
-            android:id="@+id/descripcionEditText"
+            android:id="@+id/lastnameInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:hint="@string/lastnameInput"
+            android:textColorHint="@color/hideColor"
             android:textColor="@color/colorText"
-            android:textColorHint="@color/colorText" />
+            android:backgroundTint="@color/textColor"
+            android:layout_marginTop="16dp"/>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="8dp" />
-
+        <!-- Email Input -->
         <EditText
-            android:id="@+id/correoEditText"
+            android:id="@+id/emailInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Correo"
+            android:hint="Email"
+            android:textColorHint="@color/hideColor"
             android:textColor="@color/colorText"
-            android:textColorHint="@color/colorText" />
+            android:backgroundTint="@color/textColor"
+            android:layout_marginTop="16dp"/>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="8dp" />
-
+        <!-- Phone Input -->
         <EditText
-            android:id="@+id/passwordEditText"
+            android:id="@+id/phoneInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:hint="@string/phoneInput"
+            android:textColorHint="@color/hideColor"
+            android:textColor="@color/colorText"
+            android:backgroundTint="@color/textColor"
+            android:layout_marginTop="16dp"/>
+
+        <!-- Password Input -->
+        <EditText
+            android:id="@+id/passwordInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/passwordInput"
+            android:textColorHint="@color/hideColor"
             android:textColor="@color/colorText"
-            android:textColorHint="@color/colorText" />
+            android:backgroundTint="@color/textColor"
+            android:inputType="textPassword"
+            android:layout_marginTop="16dp"/>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="8dp" />
+        <!-- TextView para el título "Rol:" -->
+        <TextView
+            android:id="@+id/roleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/roleTextView"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorText"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- RadioGroup para los RadioButtons -->
+        <RadioGroup
+            android:id="@+id/roleRadioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/roleTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp">
+
+            <!-- RadioButton para "Denunciante" -->
+            <RadioButton
+                android:id="@+id/denuncianteRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/denuncianteRadioButton"
+                android:textColor="@color/colorText"
+                android:checked="true"
+                android:buttonTint="@color/colorPrimary" />
+
+            <!-- RadioButton para "Protector" -->
+            <RadioButton
+                android:id="@+id/protectorRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Protector"
+                android:textColor="@color/colorText"
+                android:buttonTint="@color/colorPrimary"
+                android:layout_marginStart="16dp" />
+        </RadioGroup>
 
         <LinearLayout
+            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/cancelarButton"
+                android:id="@+id/cancelButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -97,7 +149,7 @@
                 android:layout_weight="0" />
 
             <Button
-                android:id="@+id/siguienteButton"
+                android:id="@+id/saveButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

@@ -163,7 +163,7 @@
             android:backgroundTint="@color/textColor"
             android:inputType="textPassword"
             android:visibility="gone"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="16dp"/>
 
         <!-- Repassword Input (Initially hidden) -->
         <EditText
@@ -176,7 +176,7 @@
             android:backgroundTint="@color/textColor"
             android:inputType="textPassword"
             android:visibility="gone"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="16dp"/>
 
         <!-- TextView para el título "Rol:" -->
         <TextView
