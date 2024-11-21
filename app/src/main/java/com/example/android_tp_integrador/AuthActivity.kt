@@ -50,6 +50,7 @@ class AuthActivity : ComponentActivity() {
     var flag: Boolean = true
     var selectedRoleButton: Int = -1
     lateinit var selectedRole: String
+    lateinit var userToken: String
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,6 +125,15 @@ class AuthActivity : ComponentActivity() {
         // Instancia Spiner
         languageSpinner = findViewById(R.id.languageSpinner)
         setupLanguageSpinner()
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                userToken = task.result
+                Log.d("FCM Token", "Token obtenido manualmente: $userToken")
+            } else {
+                Log.e("FCM Token", "Error al obtener el token", task.exception)
+            }
+        }
 
     }
 
@@ -232,6 +242,7 @@ class AuthActivity : ComponentActivity() {
                                 "lastname" to lastnameInput.text.toString(),
                                 "email" to emailEditText.text.toString(),
                                 "password" to passwordEditText.text.toString(),
+                                "token" to userToken,
                                 "role" to selectedRole
                             )
                         )

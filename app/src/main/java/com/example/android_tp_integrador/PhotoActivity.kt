@@ -3,6 +3,8 @@ package com.example.android_tp_integrador
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -112,11 +114,26 @@ class PhotoActivity : AppCompatActivity() {
 
         var nextButton: Button = findViewById(R.id.nextBtn);
         nextButton.setOnClickListener {
-            //startActivity(intent)
-            db.collection("denuncias").document(uuid).set(hashMapOf(
-                "images" to uriImageList
-            ), SetOptions.merge())
-            showNext(uuid.toString());
+            if(uriImageList.isEmpty()){
+                showConfirmationDialog(
+                    context = this,
+                    message = "¿Estás seguro que no subiras imagenes a la denuncia?"
+                ) { isConfirmed ->
+                    if (isConfirmed) {
+                        //startActivity(intent)
+                        db.collection("denuncias").document(uuid).set(hashMapOf(
+                            "images" to uriImageList
+                        ), SetOptions.merge())
+                        showNext(uuid.toString());
+                    }
+                }
+            } else {
+                db.collection("denuncias").document(uuid).set(hashMapOf(
+                    "images" to uriImageList
+                ), SetOptions.merge())
+                showNext(uuid.toString());
+            }
+
         }
     }
 
@@ -342,5 +359,24 @@ class PhotoActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    fun showConfirmationDialog(
+        context: Context,
+        message: String,
+        onResult: (Boolean) -> Unit
+    ) {
+        val dialog = AlertDialog.Builder(context)
+            .setMessage(message)
+            .setCancelable(false)
+            .setPositiveButton("Sí") { _, _ ->
+                onResult(true)
+            }
+            .setNegativeButton("No") { _, _ ->
+                onResult(false)
+            }
+            .create()
+
+        dialog.show()
     }
 }
