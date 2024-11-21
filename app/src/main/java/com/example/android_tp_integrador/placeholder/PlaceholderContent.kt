@@ -81,6 +81,7 @@ object PlaceholderContent {
                                val name: String = "",
                                val lastname: String? = "",
                                val password: String? = "",
+                               val token: String? = "",
                                val role: String? = ""){
         override fun toString(): String = email
     }

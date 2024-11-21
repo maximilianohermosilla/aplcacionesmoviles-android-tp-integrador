@@ -1,6 +1,8 @@
 package com.example.android_tp_integrador
 
 import android.Manifest
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -81,16 +83,24 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         nextButton.setOnClickListener {
-            //Guardado de ubicación (mover a botón)
-            if(latLng != null){
-                db.collection("denuncias").document(uuid).set(hashMapOf(
-                    "ubication" to latLng.toString().replace("lat/lng: (", "").replace(")", "")
-                ), SetOptions.merge())
+            showConfirmationDialog(
+                context = this,
+                message = "¿Estás seguro que quieres publicar la denuncia?"
+            ) { isConfirmed ->
+                if (isConfirmed) {
+                    //Guardado de ubicación (mover a botón)
+                    if(latLng != null){
+                        db.collection("denuncias").document(uuid).set(hashMapOf(
+                            "ubication" to latLng.toString().replace("lat/lng: (", "").replace(")", "")
+                        ), SetOptions.merge())
+                    }
+                    // Abrir otra actividad (a definir)
+                    val intent = Intent(this, DenunciaDetailHostActivity::class.java)
+                    startActivity(intent)
+                    // startActivity(Intent(this, SiguienteActivity::class.java))
+                }
             }
-            // Abrir otra actividad (a definir)
-            val intent = Intent(this, DenunciaDetailHostActivity::class.java)
-            startActivity(intent)
-            // startActivity(Intent(this, SiguienteActivity::class.java))
+
         }
 
         setupNavigation()
@@ -248,5 +258,24 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
                 else -> false
             }
         }
+    }
+
+    fun showConfirmationDialog(
+        context: Context,
+        message: String,
+        onResult: (Boolean) -> Unit
+    ) {
+        val dialog = AlertDialog.Builder(context)
+            .setMessage(message)
+            .setCancelable(false)
+            .setPositiveButton("Sí") { _, _ ->
+                onResult(true)
+            }
+            .setNegativeButton("No") { _, _ ->
+                onResult(false)
+            }
+            .create()
+
+        dialog.show()
     }
 }
