@@ -25,6 +25,9 @@
     <string name="denunciasButton">Complaints</string>
     <string name="logoutButton">Log out</string>
 
+    <!-- denuncias -->
+    <string name="editText">Edit</string>
+    <string name="deleteText">Delete</string>
 
     <!-- nueva_denuncia -->
     <string name="titleText">Title</string>

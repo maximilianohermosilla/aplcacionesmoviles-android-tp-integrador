@@ -8,6 +8,19 @@
     android:background="@color/background"
     android:textColor="@color/colorText">
 
+    <TextView
+        android:id="@+id/textLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/textLogo"
+        android:textSize="25dp"
+        android:textColor="@color/textColor"
+        android:layout_marginTop="35dp"
+        android:layout_marginBottom="8dp"
+        android:paddingVertical="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/denuncia_list"
@@ -18,7 +31,9 @@
         app:layout_constraintHeight_max="0dp"
         android:overScrollMode="never"
         android:scrollbars="vertical"
+        android:paddingTop="40dp"
         android:paddingBottom="125dp"
+        android:paddingHorizontal="8dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         app:layoutManager="LinearLayoutManager"
