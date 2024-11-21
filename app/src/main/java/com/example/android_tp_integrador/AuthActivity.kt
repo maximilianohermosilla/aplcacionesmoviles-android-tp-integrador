@@ -21,6 +21,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.RadioButton
@@ -36,6 +37,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.android_tp_integrador.placeholder.PlaceholderContent
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
