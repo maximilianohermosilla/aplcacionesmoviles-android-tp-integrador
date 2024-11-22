@@ -46,4 +46,9 @@
     <string name="priorityText">Priority</string>
     <string name="stateText">State</string>
     <string name="detailText">Detail</string>
+
+    <!-- activity_profile -->
+    <string name="userRoleTextView2">Role:</string>
+    <string name="instructionText">Next, you can modify your data:</string>
+
 </resources>

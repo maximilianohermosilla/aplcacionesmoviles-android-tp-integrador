@@ -47,4 +47,8 @@
     <string name="priorityText">Prioridad</string>
     <string name="stateText">Estado</string>
     <string name="detailText">Detalle</string>
+
+    <!-- activity_profile -->
+    <string name="userRoleTextView2">Rol:</string>
+    <string name="instructionText">A continuación, puede modificar sus datos:</string>
 </resources>
