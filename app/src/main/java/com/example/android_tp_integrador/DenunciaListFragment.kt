@@ -13,9 +13,12 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.ViewCompat
@@ -30,8 +33,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class DenunciaListFragment : Fragment() {
 
+    val db = FirebaseFirestore.getInstance();
+    private lateinit var stateSpinner: Spinner
     lateinit var userId: String
     lateinit var userRole: String
+    var state: String = ""
 
     private val unhandledKeyEventListenerCompat =
         ViewCompat.OnUnhandledKeyEventListenerCompat { v, event ->
@@ -121,18 +127,93 @@ class DenunciaListFragment : Fragment() {
             }
         }
 
-        setupRecyclerView(recyclerView, itemDetailFragmentContainer)
+        // Configurar listener de selección
+        stateSpinner = view.findViewById(R.id.stateSpinner)
+        val states = listOf("", "Pendiente", "Asignado", "Finalizado")
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, states)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        stateSpinner.adapter = adapter
+
+        stateSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedState = states[position]
+                setupRecyclerView(recyclerView, itemDetailFragmentContainer, selectedState)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Manejo opcional cuando no se selecciona nada
+            }
+        }
+
+        setupRecyclerView(recyclerView, itemDetailFragmentContainer, state)
     }
 
     private fun setupRecyclerView(
         recyclerView: RecyclerView,
-        itemDetailFragmentContainer: View?
+        itemDetailFragmentContainer: View?,
+        state: String
     ) {
-        val db = FirebaseFirestore.getInstance();
-
         if(userRole == "Protector"){
-            val results = mutableListOf<PlaceholderContent.PlaceholderItem>()
+            queryProtector(recyclerView, itemDetailFragmentContainer, state);
+        }else{
+            queryDenunciante(recyclerView, itemDetailFragmentContainer, state);
+        }
+    }
 
+    fun queryDenunciante(recyclerView: RecyclerView, itemDetailFragmentContainer: View?, state: String){
+        if(state == ""){
+            println("Filtro por denunciante")
+            db.collection("denuncias")
+                .whereEqualTo("userCreation", userId)
+                //.orderBy("dateCreation", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    // Aquí obtienes una lista de documentos que cumplen con la condición
+                    val denunciasList = querySnapshot.documents.mapNotNull { document ->
+                        document.toObject(PlaceholderContent.PlaceholderItem::class.java)
+                    }
+
+                    // Procesa la lista de denuncias
+                    println("Documentos encontrados: ${denunciasList.size}")
+                    recyclerView.adapter = SimpleItemRecyclerViewAdapter(
+                        denunciasList, itemDetailFragmentContainer, this.requireContext(), userRole, userId
+                    )
+                }
+                .addOnFailureListener { exception ->
+                    println("Error al obtener las denuncias: ${exception.message}")
+                }
+        }
+        else{
+            println("Filtro por estado y rol denunciante")
+            db.collection("denuncias")
+                .whereEqualTo("userCreation", userId)
+                .whereEqualTo("state", state)
+                //.orderBy("dateCreation", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    // Aquí obtienes una lista de documentos que cumplen con la condición
+                    val denunciasList = querySnapshot.documents.mapNotNull { document ->
+                        document.toObject(PlaceholderContent.PlaceholderItem::class.java)
+                    }
+
+                    // Procesa la lista de denuncias
+                    println("Documentos encontrados: ${denunciasList.size}")
+                    recyclerView.adapter = SimpleItemRecyclerViewAdapter(
+                        denunciasList, itemDetailFragmentContainer, this.requireContext(), userRole, userId
+                    )
+                }
+                .addOnFailureListener { exception ->
+                    println("Error al obtener las denuncias: ${exception.message}")
+                }
+        }
+
+    }
+
+    fun queryProtector(recyclerView: RecyclerView, itemDetailFragmentContainer: View?, state: String){
+        val results = mutableListOf<PlaceholderContent.PlaceholderItem>()
+
+        if(state == ""){
+            println("Filtro por rol protector")
             db.collection("denuncias")
                 .whereEqualTo("userAsignation", userId)
                 //.orderBy("dateCreation", Query.Direction.DESCENDING)
@@ -168,9 +249,28 @@ class DenunciaListFragment : Fragment() {
                 .addOnFailureListener { exception ->
                     println("Error al obtener las denuncias: ${exception.message}")
                 }
-        }else{
+        }
+        else if(state == "Pendiente") {
             db.collection("denuncias")
-                .whereEqualTo("userCreation", userId)
+                .whereEqualTo("state", "Pendiente")
+                //.orderBy("dateCreation", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    val denunciasPendientesList = querySnapshot.documents.mapNotNull { document ->
+                        document.toObject(PlaceholderContent.PlaceholderItem::class.java)
+                    }
+                    println("Documentos pendientes encontrados: ${denunciasPendientesList.size}")
+
+                    recyclerView.adapter = SimpleItemRecyclerViewAdapter(
+                        denunciasPendientesList, itemDetailFragmentContainer, this.requireContext(), userRole, userId,
+                    )
+                }
+        }
+        else{
+            println("Filtro por estado y rol protector")
+            db.collection("denuncias")
+                .whereEqualTo("userAsignation", userId)
+                .whereEqualTo("state", state)
                 //.orderBy("dateCreation", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
@@ -189,6 +289,7 @@ class DenunciaListFragment : Fragment() {
                     println("Error al obtener las denuncias: ${exception.message}")
                 }
         }
+
     }
 
     class SimpleItemRecyclerViewAdapter(
