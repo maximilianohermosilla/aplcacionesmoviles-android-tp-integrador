@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import com.example.android_tp_integrador.placeholder.PlaceholderContent
@@ -19,6 +21,9 @@ import java.util.UUID
 
 class NuevaDenunciaActivity : ComponentActivity() {
     private val db = FirebaseFirestore.getInstance();
+
+    var selectedPriorityButton: Int = -1
+    lateinit var selectedPriority: String
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,8 +40,13 @@ class NuevaDenunciaActivity : ComponentActivity() {
 
         val prefs: SharedPreferences = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val userId: String? = prefs.getString("id", null)
+
         var tituloEditText: EditText = findViewById(R.id.tituloEditText);
         var descripcionEditText: EditText = findViewById(R.id.descripcionEditText);
+        val radioGroup: RadioGroup = findViewById(R.id.priorityRadioGroup)
+        val bajaRadioButton = findViewById<RadioButton>(R.id.bajaRadioButton)
+        val mediaRadioButton = findViewById<RadioButton>(R.id.mediaRadioButton)
+        val altaRadioButton = findViewById<RadioButton>(R.id.altaRadioButton)
 
         if(uuid != ""){
             db.collection("denuncias")
@@ -54,6 +64,13 @@ class NuevaDenunciaActivity : ComponentActivity() {
                             denuncia?.let {
                                 tituloEditText.setText(it.title)
                                 descripcionEditText.setText(it.description)
+
+                                when (it.priority) {
+                                    "Baja" -> radioGroup.check(bajaRadioButton.id)
+                                    "Media" -> radioGroup.check(mediaRadioButton.id)
+                                    "Alta" -> radioGroup.check(altaRadioButton.id)
+                                    else -> radioGroup.clearCheck()
+                                }
                             }
                         }
                     }
@@ -70,10 +87,27 @@ class NuevaDenunciaActivity : ComponentActivity() {
 
         var nextButton: Button = findViewById(R.id.siguienteButton);
         nextButton.setOnClickListener {
-            if(uuid == "") {
+
+            // Validación: verificar si los campos están vacíos
+            if (tituloEditText.text.isEmpty()) {
+                tituloEditText.error = "El título es obligatorio"
+                return@setOnClickListener
+            }
+
+            if(uuid == null || uuid == "" || uuid == "null") {
                 val uuidNew: UUID = UUID.randomUUID();
                 uuid = uuidNew.toString();
             }
+
+            val radioGroup: RadioGroup = findViewById(R.id.priorityRadioGroup)
+            var selectedPriorityButton = radioGroup.checkedRadioButtonId
+            if (selectedPriorityButton != -1) {  // Verifica que haya un RadioButton seleccionado
+                val selectedRadioButton: RadioButton = findViewById(selectedPriorityButton)
+
+                selectedPriority = selectedRadioButton.text.toString()
+                println("Seleccionado: $selectedPriority")
+            }
+
             db.collection("denuncias").document(uuid.toString()).set(
                 hashMapOf(
                     "id" to uuid,
@@ -81,6 +115,7 @@ class NuevaDenunciaActivity : ComponentActivity() {
                     "title" to tituloEditText.text.toString(),
                     "description" to descripcionEditText.text.toString(),
                     "state" to "Pendiente",
+                    "priority" to selectedPriority,
                     "userCreation" to userId.toString()
                 ), SetOptions.merge())
 

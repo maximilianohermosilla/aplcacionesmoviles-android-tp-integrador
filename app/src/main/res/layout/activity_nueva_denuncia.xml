@@ -38,7 +38,63 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="8dp" />
+            android:layout_height="16dp" />
+
+        <!-- TextView para el título "Rol:" -->
+        <TextView
+            android:id="@+id/roleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/priorityText"
+            android:textSize="18sp"
+            android:textColor="@color/colorText"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp" />
+
+        <!-- RadioGroup para los RadioButtons -->
+        <RadioGroup
+            android:id="@+id/priorityRadioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="8dp">
+
+            <!-- RadioButton para "Baja" -->
+            <RadioButton
+                android:id="@+id/bajaRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Baja"
+                android:textColor="@color/colorText"
+                android:checked="true"
+                android:buttonTint="@color/colorPrimary" />
+
+            <!-- RadioButton para "Media" -->
+            <RadioButton
+                android:id="@+id/mediaRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Media"
+                android:textColor="@color/colorText"
+                android:buttonTint="@color/colorPrimary"
+                android:layout_marginStart="16dp" />
+
+            <!-- RadioButton para "Alta" -->
+            <RadioButton
+                android:id="@+id/altaRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alta"
+                android:textColor="@color/colorText"
+                android:buttonTint="@color/colorPrimary"
+                android:layout_marginStart="16dp" />
+        </RadioGroup>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <LinearLayout
             android:layout_width="match_parent"

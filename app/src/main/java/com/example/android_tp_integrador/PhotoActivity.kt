@@ -126,7 +126,9 @@ class PhotoActivity : AppCompatActivity() {
                             println("Denuncia encontrada: $denuncia")
                             denuncia?.let {
                                 uriImageList.clear()
-                                uriImageList.addAll(it.images!!)
+                                if(!it.images.isNullOrEmpty()){
+                                    uriImageList.addAll(it.images!!)
+                                }
                             }
                         }
 

@@ -20,6 +20,12 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="saveText">Save</string>
 
+    <!-- activity_auth -->
+    <string name="menuHome">Home</string>
+    <string name="menuList">Complaints</string>
+    <string name="menuNew">New Complaint</string>
+    <string name="menuUser">Profile</string>
+
     <!-- activity_home -->
     <string name="nuevaDenunciaButton">New complaint</string>
     <string name="denunciasButton">Complaints</string>

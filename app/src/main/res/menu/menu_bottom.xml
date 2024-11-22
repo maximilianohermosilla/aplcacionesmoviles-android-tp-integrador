@@ -6,24 +6,24 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/icon_home"
-        android:title="Inicio"
+        android:title="@string/menuHome"
         />
 
     <item
         android:id="@+id/nav_list"
         android:icon="@drawable/icon_list"
-        android:title="Denuncias"
+        android:title="@string/menuList"
         />
 
     <item
         android:id="@+id/nav_notification"
         android:icon="@drawable/icon_edit"
-        android:title="Nueva Denuncia"
+        android:title="@string/menuNew"
         />
 
     <item
         android:id="@+id/nav_user"
         android:icon="@drawable/icon_user"
-        android:title="Perfil"
+        android:title="@string/menuUser"
         />
 </menu>

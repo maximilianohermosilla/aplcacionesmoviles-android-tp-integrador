@@ -6,7 +6,6 @@ import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,45 +13,26 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android_tp_integrador.placeholder.PlaceholderContent;
 import com.example.android_tp_integrador.databinding.FragmentDenunciaListBinding
 import com.example.android_tp_integrador.databinding.DenunciaListContentBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
-
-/**
- * A Fragment representing a list of Pings. This fragment
- * has different presentations for handset and larger screen devices. On
- * handsets, the fragment presents a list of items, which when touched,
- * lead to a {@link DenunciaDetailFragment} representing
- * item details. On larger screens, the Navigation controller presents the list of items and
- * item details side-by-side using two vertical panes.
- */
 
 class DenunciaListFragment : Fragment() {
 
     lateinit var userId: String
     lateinit var userRole: String
-    /**
-     * Method to intercept global key events in the
-     * item list fragment to trigger keyboard shortcuts
-     * Currently provides a toast when Ctrl + Z and Ctrl + F
-     * are triggered
-     */
+
     private val unhandledKeyEventListenerCompat =
         ViewCompat.OnUnhandledKeyEventListenerCompat { v, event ->
             if (event.keyCode == KeyEvent.KEYCODE_Z && event.isCtrlPressed) {
@@ -155,6 +135,7 @@ class DenunciaListFragment : Fragment() {
 
             db.collection("denuncias")
                 .whereEqualTo("userAsignation", userId)
+                //.orderBy("dateCreation", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     // Aquí obtienes una lista de documentos que cumplen con la condición
@@ -166,6 +147,7 @@ class DenunciaListFragment : Fragment() {
 
                     db.collection("denuncias")
                         .whereEqualTo("state", "Pendiente")
+                        //.orderBy("dateCreation", Query.Direction.DESCENDING)
                         .get()
                         .addOnSuccessListener { querySnapshot ->
                             val denunciasPendientesList = querySnapshot.documents.mapNotNull { document ->
@@ -189,6 +171,7 @@ class DenunciaListFragment : Fragment() {
         }else{
             db.collection("denuncias")
                 .whereEqualTo("userCreation", userId)
+                //.orderBy("dateCreation", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     // Aquí obtienes una lista de documentos que cumplen con la condición
@@ -231,12 +214,13 @@ class DenunciaListFragment : Fragment() {
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val db = FirebaseFirestore.getInstance();
+            val priorityText = context.getString(R.string.priorityText)
 
             val item = values[position]
             holder.textState.text = item.state
             holder.textDate.text = item.dateCreation
             holder.textTitle.text = item.title
-            holder.textPriority.text = "Prioridad: " + item.priority
+            holder.textPriority.text = priorityText + ": " + item.priority
 
             if(userRole == "Protector"){
                 holder.deleteButton.visibility = View.GONE
