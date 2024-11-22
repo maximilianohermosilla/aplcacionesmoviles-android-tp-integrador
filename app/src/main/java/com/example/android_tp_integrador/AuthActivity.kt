@@ -128,6 +128,7 @@ class AuthActivity : ComponentActivity() {
         languageSpinner = findViewById(R.id.languageSpinner)
         setupLanguageSpinner()
 
+        // Obtengo el token para usarlo luego
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 userToken = task.result
