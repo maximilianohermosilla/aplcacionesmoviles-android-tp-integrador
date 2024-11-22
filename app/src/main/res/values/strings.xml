@@ -29,6 +29,8 @@
     <!-- denuncias -->
     <string name="editText">Editar</string>
     <string name="deleteText">Eliminar</string>
+    <string name="assignedText">Asignado</string>
+    <string name="finishText">Finalizar</string>
 
     <!-- nueva_denuncia -->
     <string name="titleText">Título</string>

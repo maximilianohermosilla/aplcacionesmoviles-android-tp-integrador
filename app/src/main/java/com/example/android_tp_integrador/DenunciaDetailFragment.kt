@@ -1,6 +1,7 @@
 package com.example.android_tp_integrador
 
 import SliderAdapter
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.Context
 import android.os.Bundle
@@ -34,6 +35,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import org.json.JSONObject
 import android.app.AlertDialog
+import android.content.Intent
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
@@ -58,6 +63,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
     private var toolbarLayout: CollapsingToolbarLayout? = null
     private var mapFragment: View? = null
     lateinit var assignButton: Button
+    lateinit var finishButton: Button
     lateinit var chatContainer: LinearLayout
 
     private var _binding: FragmentDenunciaDetailBinding? = null
@@ -111,6 +117,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
         logoImage = binding.logoImage!!
         mapFragment = rootView.findViewById<View>(R.id.mapFragment)!!
         assignButton = binding.assignButton!!
+        finishButton = binding.finishButton!!
         chatContainer = binding.chatContainer!!
 
         updateContent()
@@ -138,9 +145,29 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
+        finishButton.setOnClickListener {
+            showConfirmationDialog(
+                context = requireContext(),
+                message = "¿Estás seguro que desea finalizar la denuncia?"
+            ) { isConfirmed ->
+                if (isConfirmed) {
+                    if(userId != ""){
+                        db.collection("denuncias").document(id).set(hashMapOf(
+                            "state" to "Finalizado"
+                        ), SetOptions.merge())
+                    }
+                    finishButton.visibility = View.GONE
+                    sendNotificationByComplaintID(id)
+
+                    startActivity(Intent(getActivity(), DenunciaDetailHostActivity::class.java))
+                } else {}
+            }
+        }
+
         return rootView
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateContent() {
         val title: String = getString(R.string.textLogo)
         val descriptionText: String = getString(R.string.descriptionText)
@@ -164,7 +191,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                         item?.let {
                             itemTitleTextView.text = it.title
                             itemDateTextView.text = dateText + ": " + it.dateCreation
-                            itemIdTextView.text = it.id
+                            itemIdTextView.text = it.state
                             itemDescriptionTextView.text = descriptionText + ": \n\n" + it.description
 
                             println(it.userAsignation)
@@ -174,15 +201,27 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                             }
                             else{
                                 println("No es protector o esta asignado")
-                                assignedUser.text = it.userAsignation ?: "Pendiente"
+                                lifecycleScope.launch {
+                                    val user = obtenerUsuarioPorId(it.userAsignation.toString())
+                                    if (user != null) {
+                                        assignedUser.text = "Asignado: \n" + user.name + " " + user.lastname
+                                    } else {
+                                        println("Usuario no encontrado.")
+                                    }
+                                }
                                 assignButton.visibility = View.GONE
                             }
 
                             if(it.userCreation == userId || it.userAsignation == userId){
                                 chatContainer.visibility = View.VISIBLE
+                                finishButton.visibility = View.VISIBLE
                             }
                             else{
                                 chatContainer.visibility = View.GONE
+                            }
+
+                            if(it.state == "Finalizado"){
+                                finishButton.visibility = View.GONE
                             }
 
                             if(it.images != null && it.images.isNotEmpty()) {
@@ -342,5 +381,22 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
         println("Inicializando onMapReady")
         googleMap = map
         googleMap.uiSettings.isZoomControlsEnabled = true
+    }
+
+    suspend fun obtenerUsuarioPorId(id: String): PlaceholderContent.UserItem? {
+        return try {
+            val documentSnapshot = db.collection("users")
+                .document(id)
+                .get()
+                .await()
+            if (documentSnapshot.exists()) {
+                documentSnapshot.toObject( PlaceholderContent.UserItem::class.java)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            println("Error al obtener el usuario: ${e.message}")
+            null
+        }
     }
 }

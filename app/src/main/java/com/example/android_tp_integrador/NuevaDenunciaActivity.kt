@@ -9,8 +9,10 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
+import com.example.android_tp_integrador.placeholder.PlaceholderContent
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -24,6 +26,9 @@ class NuevaDenunciaActivity : ComponentActivity() {
         setContentView(R.layout.activity_nueva_denuncia);
         setupNavigation()
 
+        val bundle: Bundle? = intent.extras
+        var uuid: String = bundle?.getString("uuid").toString()
+
         val fechaActual = LocalDateTime.now()
         val formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val fechaFormateada = fechaActual.format(formato)
@@ -33,6 +38,31 @@ class NuevaDenunciaActivity : ComponentActivity() {
         var tituloEditText: EditText = findViewById(R.id.tituloEditText);
         var descripcionEditText: EditText = findViewById(R.id.descripcionEditText);
 
+        if(uuid != ""){
+            db.collection("denuncias")
+                .document(uuid)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        // Convierte el documento a un objeto PlaceholderItem
+                        val denuncia =
+                            documentSnapshot.toObject(PlaceholderContent.PlaceholderItem::class.java)
+
+                        // Procesa el objeto obtenido
+                        if (denuncia != null) {
+                            println("Denuncia encontrada: $denuncia")
+                            denuncia?.let {
+                                tituloEditText.setText(it.title)
+                                descripcionEditText.setText(it.description)
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    println("Error al obtener la denuncia: ${exception.message}")
+                }
+        }
+
         val cancelarButton: Button = findViewById(R.id.cancelarButton)
         cancelarButton.setOnClickListener {
             onBackPressed()
@@ -40,17 +70,20 @@ class NuevaDenunciaActivity : ComponentActivity() {
 
         var nextButton: Button = findViewById(R.id.siguienteButton);
         nextButton.setOnClickListener {
-            val uuid: UUID = UUID.randomUUID();
+            if(uuid == "") {
+                val uuidNew: UUID = UUID.randomUUID();
+                uuid = uuidNew.toString();
+            }
             db.collection("denuncias").document(uuid.toString()).set(
                 hashMapOf(
-                    "id" to uuid.toString(),
+                    "id" to uuid,
                     "dateCreation" to fechaFormateada.toString(),
                     "title" to tituloEditText.text.toString(),
                     "description" to descripcionEditText.text.toString(),
                     "state" to "Pendiente",
                     "userCreation" to userId.toString()
-                )
-            )
+                ), SetOptions.merge())
+
             val intent = Intent(this, PhotoActivity::class.java)
             //startActivity(intent)
 
@@ -68,6 +101,7 @@ class NuevaDenunciaActivity : ComponentActivity() {
 
     fun setupNavigation(){
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.nav_notification
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {

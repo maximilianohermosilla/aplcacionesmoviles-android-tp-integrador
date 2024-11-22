@@ -111,6 +111,7 @@ class DenunciaListFragment : Fragment() {
         }
 
         val bottomNavigationView = view.findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.nav_list
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
@@ -283,6 +284,12 @@ class DenunciaListFragment : Fragment() {
                         }
                     } else {}
                 }
+            }
+
+            holder.editButton.setOnClickListener {
+                val intent = Intent(context, NuevaDenunciaActivity::class.java)
+                intent.putExtra("uuid", item.id)
+                context.startActivity(intent)
             }
 
             with(holder.itemView) {

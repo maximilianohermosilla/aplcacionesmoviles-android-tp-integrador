@@ -1,5 +1,6 @@
 package com.example.android_tp_integrador
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -52,6 +53,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     private fun showNotification(title: String, body: String) {
         val channelId = "default_channel_id"
         val channelName = "Default Channel"
@@ -80,7 +82,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setContentTitle(title)
             .setContentText(body)
-            .setSmallIcon(android.R.drawable.ic_notification_overlay)
+            .setSmallIcon(R.drawable.ic_launcher)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
 

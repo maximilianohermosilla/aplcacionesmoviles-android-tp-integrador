@@ -27,6 +27,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.UploadCallback
+import com.example.android_tp_integrador.placeholder.PlaceholderContent
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -34,7 +35,12 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.net.URL
 import java.util.ArrayList
 
 class PhotoActivity : AppCompatActivity() {
@@ -78,14 +84,9 @@ class PhotoActivity : AppCompatActivity() {
             "api_secret" to cloudinary_api_secret
         )
 
-        MediaManager.init(this, config)
-//        val requestId: String = MediaManager.get().upload("dog.mp4")
-//            .unsigned("preset1")
-//            .option("resource_type", "video")
-//            .option("asset_folder", "pets/dogs/")
-//            .option("public_id", "my_dog")
-//            .option("notification_url", "https://mysite.example.com/notify_endpoint")
-//            .dispatch()
+        if (!isMediaManagerInitialized()) {
+            MediaManager.init(this, config)
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.photoActivity)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -110,6 +111,42 @@ class PhotoActivity : AppCompatActivity() {
         val previousButton: Button = findViewById(R.id.previousBtn)
         previousButton.setOnClickListener {
             onBackPressed()
+        }
+
+        if(uuid != ""){
+            db.collection("denuncias")
+                .document(uuid)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        val denuncia =
+                            documentSnapshot.toObject(PlaceholderContent.PlaceholderItem::class.java)
+
+                        if (denuncia != null) {
+                            println("Denuncia encontrada: $denuncia")
+                            denuncia?.let {
+                                uriImageList.clear()
+                                uriImageList.addAll(it.images!!)
+                            }
+                        }
+
+                        if(uriImageList.isNotEmpty()){
+                            for (i in uriImageList) {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    val bitmap = loadImageFromUrl(i.replace("\"", "").replace("http:", "https:"))
+                                    if (bitmap != null) {
+                                        addImageToLayout(bitmap)
+                                        //holder.imageView.setImageBitmap(bitmap)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    println("Error al obtener la denuncia: ${exception.message}")
+                }
+
         }
 
         var nextButton: Button = findViewById(R.id.nextBtn);
@@ -246,6 +283,7 @@ class PhotoActivity : AppCompatActivity() {
     private fun removeImage(position: Int) {
         if (position in imageList.indices) {
             imageList.removeAt(position)
+            uriImageList.removeAt(position)
             refreshImageViews()
         }
     }
@@ -331,6 +369,7 @@ class PhotoActivity : AppCompatActivity() {
 
     fun setupNavigation(){
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.nav_notification
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
@@ -378,5 +417,29 @@ class PhotoActivity : AppCompatActivity() {
             .create()
 
         dialog.show()
+    }
+
+
+    // Función para cargar una imagen desde una URL
+    private suspend fun loadImageFromUrl(url: String): Bitmap? {
+        //val bitmap = loadImageFromUrl(url.replace("\"", "").replace("http:", "https:"))
+        return withContext(Dispatchers.IO) {
+            try {
+                val connection = URL(url).openStream()
+                BitmapFactory.decodeStream(connection)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+    }
+
+    fun isMediaManagerInitialized(): Boolean {
+        return try {
+            MediaManager.get() // Lanza excepción si no está inicializado
+            true
+        } catch (e: IllegalStateException) {
+            false
+        }
     }
 }

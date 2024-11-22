@@ -104,6 +104,17 @@
                 android:textColor="@color/colorText"
                 android:text="@string/assignText" />
 
+            <Button
+                android:id="@+id/finishButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:background="@color/colorSecondaryButton"
+                android:textColor="@color/colorText"
+                android:visibility="gone"
+                android:text="@string/finishText" />
+
             <TextView
                 android:id="@+id/assignedUser"
                 style="?android:attr/textAppearanceLarge"

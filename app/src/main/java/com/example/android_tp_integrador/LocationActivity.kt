@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.android_tp_integrador.databinding.ActivityMapsBinding
+import com.example.android_tp_integrador.placeholder.PlaceholderContent
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -34,6 +35,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -72,6 +76,37 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         val btnSearch = findViewById<Button>(R.id.btnSearch)
         val etAddress = findViewById<EditText>(R.id.textUbication)
 
+        if(uuid != ""){
+            db.collection("denuncias")
+                .document(uuid)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        val denuncia =
+                            documentSnapshot.toObject(PlaceholderContent.PlaceholderItem::class.java)
+
+                        if (denuncia != null) {
+                            println("Denuncia encontrada: $denuncia")
+                            denuncia?.let {
+                                if(it.ubication != null && it.ubication != ""){
+                                    val location: String = it.ubication.toString().replace("\"", "");
+                                    val latitude = location.split(",").first()
+                                    val longitude = location.split(",").last()
+                                    val currentLatLng = LatLng(latitude.toDouble(), longitude.toDouble())
+                                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+                                    googleMap.addMarker(MarkerOptions().position(currentLatLng).title("Ubicación actual"))
+                                    latLng = currentLatLng
+                                }
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    println("Error al obtener la denuncia: ${exception.message}")
+                }
+
+        }
+
         btnSearch.setOnClickListener {
             val address = etAddress.text.toString()
             if (address.isNotEmpty()) {
@@ -83,7 +118,11 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
         previousButton.setOnClickListener {
             // Volver a la actividad anterior
-            //finish()
+            val nextIntent = Intent(this, PhotoActivity::class.java).apply{
+                putExtra("id", uuid)
+            }
+
+            startActivity(nextIntent)
         }
 
         nextButton.setOnClickListener {
@@ -266,6 +305,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setupNavigation(){
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.nav_notification
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
