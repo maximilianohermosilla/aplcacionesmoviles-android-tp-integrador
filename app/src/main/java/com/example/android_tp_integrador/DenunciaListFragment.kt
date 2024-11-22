@@ -1,6 +1,7 @@
 package com.example.android_tp_integrador
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
@@ -8,16 +9,21 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android_tp_integrador.placeholder.PlaceholderContent;
@@ -26,6 +32,7 @@ import com.example.android_tp_integrador.databinding.DenunciaListContentBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 /**
  * A Fragment representing a list of Pings. This fragment
@@ -38,8 +45,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class DenunciaListFragment : Fragment() {
 
-    private lateinit var userId: String
-    private lateinit var userRole: String
+    lateinit var userId: String
+    lateinit var userRole: String
     /**
      * Method to intercept global key events in the
      * item list fragment to trigger keyboard shortcuts
@@ -171,7 +178,7 @@ class DenunciaListFragment : Fragment() {
                             val uniqueResults = results.distinctBy { it.id }
                             println("Documentos a renderizar: ${uniqueResults.size}")
                             recyclerView.adapter = SimpleItemRecyclerViewAdapter(
-                                uniqueResults, itemDetailFragmentContainer
+                                uniqueResults, itemDetailFragmentContainer, this.requireContext(), userRole, userId,
                             )
                         }
                 }
@@ -191,7 +198,7 @@ class DenunciaListFragment : Fragment() {
                     // Procesa la lista de denuncias
                     println("Documentos encontrados: ${denunciasList.size}")
                     recyclerView.adapter = SimpleItemRecyclerViewAdapter(
-                        denunciasList, itemDetailFragmentContainer
+                        denunciasList, itemDetailFragmentContainer, this.requireContext(), userRole, userId
                     )
                 }
                 .addOnFailureListener { exception ->
@@ -202,7 +209,10 @@ class DenunciaListFragment : Fragment() {
 
     class SimpleItemRecyclerViewAdapter(
         private val values: List<PlaceholderContent.PlaceholderItem>,
-        private val itemDetailFragmentContainer: View?
+        private val itemDetailFragmentContainer: View?,
+        private val context: Context,
+        private val userRole: String,
+        private val userId: String,
     ) :
         RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
 
@@ -219,11 +229,61 @@ class DenunciaListFragment : Fragment() {
 
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val db = FirebaseFirestore.getInstance();
+
             val item = values[position]
             holder.textState.text = item.state
             holder.textDate.text = item.dateCreation
             holder.textTitle.text = item.title
             holder.textPriority.text = "Prioridad: " + item.priority
+
+            if(userRole == "Protector"){
+                holder.deleteButton.visibility = View.GONE
+                holder.editButton.visibility = View.GONE
+            }
+
+            if(item.state == "Asignado"){
+                holder.layoutCard.setBackgroundResource(R.drawable.rounded_button_primary_dark)
+                holder.deleteButton.visibility = View.GONE
+                holder.editButton.visibility = View.GONE
+                holder.logoState.setImageResource(R.drawable.icon_timelapse_light);
+            }
+
+            if(item.state == "Finalizado"){
+                holder.layoutCard.setBackgroundResource(R.drawable.rounded_button_aside)
+                holder.deleteButton.visibility = View.GONE
+                holder.editButton.visibility = View.GONE
+                holder.logoState.setImageResource(R.drawable.icon_check_light);
+            }
+
+            holder.deleteButton.setOnClickListener {
+                showConfirmationDialog(
+                    context = context,
+                    message = "¿Estás seguro que quieres eliminar la denuncia?"
+                ) { isConfirmed ->
+                    if (isConfirmed) {
+                        if(userId != "") {
+                            val docRef = db.collection("denuncias").document(item.id)
+
+                            docRef.delete()
+                                .addOnSuccessListener {
+                                    // Documento eliminado exitosamente
+                                    Log.d(
+                                        "Firestore",
+                                        "Documento con ID $item.id eliminado exitosamente"
+                                    )
+
+                                    val intent = Intent(context, DenunciaDetailHostActivity::class.java)
+                                    context.startActivity(intent)
+                                }
+                                .addOnFailureListener { e ->
+                                    // Error al eliminar el documento
+                                    Log.e("Firestore", "Error al eliminar documento", e)
+                                }
+                        }
+                    } else {}
+                }
+            }
 
             with(holder.itemView) {
                 tag = item
@@ -291,10 +351,33 @@ class DenunciaListFragment : Fragment() {
 
         inner class ViewHolder(binding: DenunciaListContentBinding) :
             RecyclerView.ViewHolder(binding.root) {
+            val layoutCard: LinearLayout = binding.layoutCard
             val textState: TextView = binding.textState
             val textDate: TextView = binding.textDate
             val textTitle: TextView = binding.textTitle
             val textPriority: TextView = binding.textPriority
+            val deleteButton: Button = binding.deleteButton
+            val editButton: Button = binding.editButton
+            val logoState: ImageView = binding.logoState
+        }
+
+        fun showConfirmationDialog(
+            context: Context,
+            message: String,
+            onResult: (Boolean) -> Unit
+        ) {
+            val dialog = AlertDialog.Builder(context)
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("Sí") { _, _ ->
+                    onResult(true)
+                }
+                .setNegativeButton("No") { _, _ ->
+                    onResult(false)
+                }
+                .create()
+
+            dialog.show()
         }
 
     }
