@@ -60,7 +60,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
     var userName: String = ""
     var userRole: String = ""
     var userToken: String? = ""
-    private val bearerToken = "ya29.c.c0ASRK0GY6Ksg_I8M2wLA-DuXvd2EeE-NR9WKAuP42dNQucineo4ru55qL7-BNekiOZi6IZZfU8lKYaPQCcGnqjS9-MQcvEE9ssHggdvBtDWzMOuOc3gwoyjKLYjbSGcFY4UwmIHixo_y8CyWM6uoNldwH43ITIWsPZ7gz6ivsu3lpRwkRFNAfTlGOOlpM7fLIe5zQ5k55gRoL_Kd2ePx40HBs0KbXucvq4c9333ndDEx6UrhiD-oLk93LESAChXoPBen0H_cpD8QOj4qwaWUHU3ijrJn45T4IiFI8VLc9YdT3iYCYT5DFMJjo5eE6e4SBfDCkdWFEAGDxtebiqAY0T5NY5BYhYkh4i6GuLkCjmlFjCw1N4mLVbNUL384KujuI1f7943a05rafSv857cWgS7ya5-YF_zs9Uu3-YS1e6_ihvXIQXan9mzI6pzM2a3j1ruue3kUUmZQOcpbhFgoJWUr1pFFStuXchWJMiQcir9Zp0x3zrI0g2B2mv5Is7F0QfdQJrVRv0sshrFiI8OY5pqQ4UO3k49gsak51O97gy--ZOIi_WSa-InxXpwoe1z16IO1V5MqBWJaRdZtrjpkkh3Xqxgu6ZeVUxsg5lFUmin8l6oySRXR-Wt3MwpvgWjV15onxbVvy_rkVuiMStiI1z9ZecIkFi7MpBc5zJrtYOzgxbWspJg9nc9XeyYfUejhrBVahUSY_yVjnFF4vB1ic2coU8WX2lknYgMxnR0ot-7dfFf3R2WU0xv358jeoU7r0YnooFQzd6Z-Igyu0qh1ZyksM8htiIi-dxu405MMIluc_SnxSRd6qg-wOsnMQWM_oo65_VFbFYsczZ1cyzmZihfuIr72BOMYgjO4nFp224ROpW_tcxWc-b5tfaVkc4aMmczi4tJsbqo3Ri4Q8QdZQs9uuzb-Mjal-FWyRb2r9o3Vwxo0RpeVcZ7IWmzfW8B50hnfcj-qqphRQQcQfnMtRSfMg-dYXiR-304Zfmulh7l_S-6xqZwqWzd6"
+    private val bearerToken = "ya29.c.c0ASRK0GbanyGSRAwwPm9-emKejnIR-zovT7DF4tZLsrITXOxB3PPFTuPERcWZJRjPFvnIW119SYWrKgn5OXuc8RHwLxtsj_oOlLFHGYRz6a71OGjCs44obpNiJphqsMwLqYDp5cxZle4DSEfu9Eyl56tqU3pRqn5mQ8F4qaWVeDq6wp-dL6Y5axp4t7rN3cvBKw9DZzkg-QV_0VaWHO6r-_MHj6w2CTYcpMCXR6XbkZrioBDOSqG-u009TR9-tlNq-jMKNWdVs1P5ekkQ9nYNrgSotZeL-UApcH4VIL0jOuSweRNrmLr4AvgkhMB_NCLzokcMqhYwoJdfyMmAIcMbYp9uTIMw4Ve46sIv1fYYq2e3lZIa6v81A4A1T385C1qk5g4tRqs6gFw4cfMvakgRXgBa4tpJfRdvcenW8dx_Bo55gpd0y_wnaJ9MUjnarMk1w6ld_Q5uvQm5cunntySzRj0tjfSib5Sdr_9Qjlr-eJm452x-495Zv2v0X9vbaBVpOknZz12ka41eMv0s6iek6k-2XpwS7fwVflqURrJbk95-xR6WX6Vj03WZ3r6b-bsSx1e2rv8Zg7scFiti9fIvbOyQU49Rb3hl4z49WFRj8syMVv9tyYkhbeUQyJjeYF_6t13Y-jqRqst55OUsw7hci_IzBxmvqWO25S_rw_wss3nfOScsc_Iugk_tRleFz4b44u7pUsfX27iVFs7voyO68UJvckbq4ZaYO0e8c-nYuy_9WypsJvj3iYQJxvmbBcXmk_xvt0tct3SdIewlxSkvg7fsS1Z-Y7nSXl-lbkwp9ev26w121phgRaFzf3ioeYeheq-rvyXXe0J1xOf32QVR7twsVhqzuypF3lBSk8dRVtX8Y8l-tmaIrhX2JVcWqhwiYY8FMdaOXjvi53rd2m---F2lstFp9IUwYZ3ujbm10s76Yn1Oj5xwFwRuY1i04pixIZSgklMXogpWou_9nZUiuVkBv4yaz7Fqo6c_574JQlUm42zwj5FQdX1"
 
     private val commentsList: MutableList<PlaceholderContent.Comment> = ArrayList()
 
@@ -162,7 +162,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                     assignedUser.text = "Asignado: \n" + userName
                     assignButton.visibility = View.GONE
                     chatContainer.visibility = View.VISIBLE
-                    sendNotificationByComplaintID(id)
+                    sendNotificationByComplaintID(id, "Tu denuncia ya está siendo atendida por un responsable!", "$userName es el protector asignado")
                 } else {}
             }
         }
@@ -179,7 +179,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                         ), SetOptions.merge())
                     }
                     finishButton.visibility = View.GONE
-                    sendNotificationByComplaintID(id)
+                    sendNotificationByComplaintID(id, "Tu denuncia ha sido finalizada", "$userName era protector asignado")
 
                     startActivity(Intent(getActivity(), DenunciaDetailHostActivity::class.java))
                 } else {}
@@ -320,7 +320,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
 
     }
 
-    private fun sendNotificationByComplaintID(complaintID: String) {
+    private fun sendNotificationByComplaintID(complaintID: String, title: String? = "", body: String?  = "") {
         db.collection("denuncias")
             .document(complaintID)
             .get()
@@ -335,10 +335,10 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                             .addOnSuccessListener { user ->
                                 if (user != null && user.exists()) {
                                     val userToken = user.getString("token")
-                                    val userName = user.getString("name")
+                                    //val userName = user.getString("name")
 
                                     if (userToken != null) {
-                                        sendNotification(userToken, userName)
+                                        sendNotification(userToken, userName, title, body)
                                     } else {
                                         Log.e("Firebase", "El token del usuario no está disponible.")
                                     }
@@ -361,15 +361,15 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
             }
     }
 
-    private fun sendNotification(token: String?, name: String?) {
+    private fun sendNotification(token: String?, name: String?, title: String? = "", body: String?  = "") {
         val fcmUrl = "https://fcm.googleapis.com/v1/projects/62704752521/messages:send"
 
         val notificationPayload = JSONObject().apply {
             put("message", JSONObject().apply {
                 put("token", token)
                 put("data", JSONObject().apply {
-                    put("title", "Tu denuncia ya está siendo atendida por un responsable!")
-                    put("body", "$name es el protecto asignado")
+                    put("title", title)
+                    put("body", body)
                 })
             })
         }
