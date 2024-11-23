@@ -159,8 +159,9 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                             "state" to "Asignado"
                         ), SetOptions.merge())
                     }
-                    assignedUser.text = userId ?: "Sin asignar"
+                    assignedUser.text = "Asignado: \n" + userName
                     assignButton.visibility = View.GONE
+                    chatContainer.visibility = View.VISIBLE
                     sendNotificationByComplaintID(id)
                 } else {}
             }
@@ -294,6 +295,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                             }
 
                             if(it.comments != null && it.comments.isNotEmpty()) {
+
                                 commentsList.addAll(it.comments)
                                 recyclerView.adapter = CommentsAdapter(commentsList)
                             }

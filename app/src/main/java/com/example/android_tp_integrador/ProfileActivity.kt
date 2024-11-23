@@ -39,7 +39,7 @@ class ProfileActivity : ComponentActivity() {
     private lateinit var prefs: SharedPreferences
     private var isSpinnerInitialized = false
     private val db = FirebaseFirestore.getInstance();
-    lateinit var selectedRole: String
+    var selectedRole: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,6 +88,7 @@ class ProfileActivity : ComponentActivity() {
                 nameTxt.setText("${user.name} ${user.lastname}")
                 emailTxt.setText("Email: ${user.email}")
                 roleTxt.setText(user.role)
+                selectedRole = user.role.toString()
 
                 when (user.role) {
                     "Denunciante" -> radioGroup.check(radioButtonDenunciante.id)
@@ -195,8 +196,12 @@ class ProfileActivity : ComponentActivity() {
                     true
                 }
                 R.id.nav_notification -> {
-                    println("nav_notification presionado")
-                    startActivity(Intent(this, NuevaDenunciaActivity::class.java))
+                    if(selectedRole == "Protector"){
+                        Toast.makeText(this, "Esta opción no está habilitada para tu perfil de usuario", Toast.LENGTH_LONG).show()
+                    }
+                    else{
+                        startActivity(Intent(this, NuevaDenunciaActivity::class.java))
+                    }
                     true
                 }
                 R.id.nav_user -> {

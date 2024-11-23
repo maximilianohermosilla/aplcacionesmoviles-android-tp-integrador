@@ -111,8 +111,12 @@ class DenunciaListFragment : Fragment() {
                     true
                 }
                 R.id.nav_notification -> {
-                    println("nav_notification presionado")
-                    startActivity(Intent(getActivity(), NuevaDenunciaActivity::class.java))
+                    if(userRole == "Protector"){
+                        Toast.makeText(requireContext(), "Esta opción no está habilitada para tu perfil de usuario", Toast.LENGTH_LONG).show()
+                    }
+                    else{
+                        startActivity(Intent(getActivity(), NuevaDenunciaActivity::class.java))
+                    }
                     true
                 }
                 R.id.nav_user -> {
@@ -129,7 +133,7 @@ class DenunciaListFragment : Fragment() {
 
         // Configurar listener de selección
         stateSpinner = view.findViewById(R.id.stateSpinner)
-        val states = listOf("", "Pendiente", "Asignado", "Finalizado")
+        val states = listOf("Todos", "Pendiente", "Asignado", "Finalizado")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, states)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         stateSpinner.adapter = adapter
@@ -161,7 +165,7 @@ class DenunciaListFragment : Fragment() {
     }
 
     fun queryDenunciante(recyclerView: RecyclerView, itemDetailFragmentContainer: View?, state: String){
-        if(state == ""){
+        if(state == "Todos"){
             println("Filtro por denunciante")
             db.collection("denuncias")
                 .whereEqualTo("userCreation", userId)
@@ -212,7 +216,7 @@ class DenunciaListFragment : Fragment() {
     fun queryProtector(recyclerView: RecyclerView, itemDetailFragmentContainer: View?, state: String){
         val results = mutableListOf<PlaceholderContent.PlaceholderItem>()
 
-        if(state == ""){
+        if(state == "Todos"){
             println("Filtro por rol protector")
             db.collection("denuncias")
                 .whereEqualTo("userAsignation", userId)
@@ -326,6 +330,11 @@ class DenunciaListFragment : Fragment() {
             if(userRole == "Protector"){
                 holder.deleteButton.visibility = View.GONE
                 holder.editButton.visibility = View.GONE
+            }
+
+            if(item.state == "Pendiente"){
+                holder.layoutCard.setBackgroundResource(R.drawable.rounded_button_secondary)
+                holder.logoState.setImageResource(R.drawable.icon_clock_light);
             }
 
             if(item.state == "Asignado"){

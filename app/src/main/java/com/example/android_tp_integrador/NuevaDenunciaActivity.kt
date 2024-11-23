@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import com.example.android_tp_integrador.placeholder.PlaceholderContent
@@ -22,6 +23,7 @@ import java.util.UUID
 class NuevaDenunciaActivity : ComponentActivity() {
     private val db = FirebaseFirestore.getInstance();
 
+    var userRole: String? = "";
     var selectedPriorityButton: Int = -1
     lateinit var selectedPriority: String
 
@@ -40,6 +42,7 @@ class NuevaDenunciaActivity : ComponentActivity() {
 
         val prefs: SharedPreferences = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val userId: String? = prefs.getString("id", null)
+        userRole = prefs.getString("id", null)
 
         var tituloEditText: EditText = findViewById(R.id.tituloEditText);
         var descripcionEditText: EditText = findViewById(R.id.descripcionEditText);
@@ -150,8 +153,12 @@ class NuevaDenunciaActivity : ComponentActivity() {
                     true
                 }
                 R.id.nav_notification -> {
-                    println("nav_notification presionado")
-                    startActivity(Intent(this, NuevaDenunciaActivity::class.java))
+                    if(userRole == "Protector"){
+                        Toast.makeText(this, "Esta opción no está habilitada para tu perfil de usuario", Toast.LENGTH_LONG).show()
+                    }
+                    else{
+                        startActivity(Intent(this, NuevaDenunciaActivity::class.java))
+                    }
                     true
                 }
                 R.id.nav_user -> {

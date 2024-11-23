@@ -37,6 +37,7 @@ enum class ProviderType{
 
 class HomeActivity : ComponentActivity() {
     val db = FirebaseFirestore.getInstance();
+    var role: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -52,7 +53,7 @@ class HomeActivity : ComponentActivity() {
         val provider: String = preferences.getString("provider", null) ?: bundle?.getString("provider").toString()
         val name: String = preferences.getString("name", null) ?: bundle?.getString("name").toString()
         val lastname: String = preferences.getString("lastname", null) ?: bundle?.getString("lastname").toString()
-        val role: String = preferences.getString("role", null) ?: bundle?.getString("role").toString()
+        role = preferences.getString("role", null) ?: bundle?.getString("role").toString()
 
         setup(id ?: "", email ?: "", provider ?: "", name ?: "", role ?: "");
 
@@ -108,8 +109,12 @@ class HomeActivity : ComponentActivity() {
                     true
                 }
                 R.id.nav_notification -> {
-                    println("nav_notification presionado")
-                    startActivity(Intent(this, NuevaDenunciaActivity::class.java))
+                    if(role == "Protector"){
+                        Toast.makeText(this, "Esta opción no está habilitada para tu perfil de usuario", Toast.LENGTH_LONG).show()
+                    }
+                    else{
+                        startActivity(Intent(this, NuevaDenunciaActivity::class.java))
+                    }
                     true
                 }
                 R.id.nav_user -> {
