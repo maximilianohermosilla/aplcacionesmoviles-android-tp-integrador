@@ -153,12 +153,13 @@ class AuthActivity : ComponentActivity() {
         val email: String? = prefs.getString("email", null)
         val provider: String? = prefs.getString("provider", null)
         val name: String? = prefs.getString("name", null)
+        val lastname: String? = prefs.getString("lastname", null)
         val role: String? = prefs.getString("role", null)
 
-        if(id != null && email != null && provider != null && name != null && role != null){
+        if(id != null && email != null && provider != null && name != null && role != null && lastname != null){
             var authLayout: ConstraintLayout = findViewById(R.id.constraintLayout);
             authLayout.visibility = View.INVISIBLE;
-            showHome(id, email, ProviderType.valueOf(provider), name, role)
+            showHome(id, email, ProviderType.valueOf(provider), name, lastname, role)
         }
     }
 
@@ -249,7 +250,7 @@ class AuthActivity : ComponentActivity() {
                                 "role" to selectedRole
                             )
                         )
-                        showHome(uid, it.result.user?.email.toString() ?: "", ProviderType.BASIC, nameInput.text.toString() + lastnameInput.text.toString(), selectedRole)
+                        showHome(uid, it.result.user?.email.toString() ?: "", ProviderType.BASIC, nameInput.text.toString(), lastnameInput.text.toString(), selectedRole)
                     } else {
                         showAlert()
                     }
@@ -297,6 +298,7 @@ class AuthActivity : ComponentActivity() {
                                     user.email ?: "",
                                     ProviderType.GOOGLE,
                                     user.name ?: "",
+                                    user.lastname ?: "",
                                     user.role ?: ""
                                 )
                             } else {
@@ -356,12 +358,13 @@ class AuthActivity : ComponentActivity() {
         dialog.show()
     }
 
-    private fun showHome(id: String, email: String, provider: ProviderType, name: String, role: String){
+    private fun showHome(id: String, email: String, provider: ProviderType, name: String, lastname: String, role: String){
         val homeIntent = Intent(this, HomeActivity::class.java).apply{
             putExtra("id", id)
             putExtra("email", email)
             putExtra("provider", provider.name)
             putExtra("name", name)
+            putExtra("lastname", lastname)
             putExtra("role", role)
         }
 
@@ -391,6 +394,7 @@ class AuthActivity : ComponentActivity() {
                                         account.email ?: "",
                                         ProviderType.GOOGLE,
                                         account.displayName ?: "",
+                                            "",
                                         user.role ?: ""
                                     )
                                     } else {

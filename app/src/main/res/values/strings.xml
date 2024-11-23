@@ -9,6 +9,7 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="saveText">Guardar</string>
     <string name="filterState">Filtrar por estado:</string>
+    <string name="writeComment">Escribe un comentario...</string>
 
     <!-- activity_auth -->
     <string name="menuHome">Inicio</string>

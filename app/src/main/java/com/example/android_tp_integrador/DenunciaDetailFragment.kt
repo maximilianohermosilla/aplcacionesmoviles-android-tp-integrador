@@ -36,9 +36,18 @@ import com.google.firebase.firestore.SetOptions
 import org.json.JSONObject
 import android.app.AlertDialog
 import android.content.Intent
+import android.os.Build
+import android.widget.EditText
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.ArrayList
+import java.util.UUID
 
 
 class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
@@ -48,9 +57,12 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
 
     lateinit var id: String
     var userId: String = ""
+    var userName: String = ""
     var userRole: String = ""
     var userToken: String? = ""
     private val bearerToken = "ya29.c.c0ASRK0GY6Ksg_I8M2wLA-DuXvd2EeE-NR9WKAuP42dNQucineo4ru55qL7-BNekiOZi6IZZfU8lKYaPQCcGnqjS9-MQcvEE9ssHggdvBtDWzMOuOc3gwoyjKLYjbSGcFY4UwmIHixo_y8CyWM6uoNldwH43ITIWsPZ7gz6ivsu3lpRwkRFNAfTlGOOlpM7fLIe5zQ5k55gRoL_Kd2ePx40HBs0KbXucvq4c9333ndDEx6UrhiD-oLk93LESAChXoPBen0H_cpD8QOj4qwaWUHU3ijrJn45T4IiFI8VLc9YdT3iYCYT5DFMJjo5eE6e4SBfDCkdWFEAGDxtebiqAY0T5NY5BYhYkh4i6GuLkCjmlFjCw1N4mLVbNUL384KujuI1f7943a05rafSv857cWgS7ya5-YF_zs9Uu3-YS1e6_ihvXIQXan9mzI6pzM2a3j1ruue3kUUmZQOcpbhFgoJWUr1pFFStuXchWJMiQcir9Zp0x3zrI0g2B2mv5Is7F0QfdQJrVRv0sshrFiI8OY5pqQ4UO3k49gsak51O97gy--ZOIi_WSa-InxXpwoe1z16IO1V5MqBWJaRdZtrjpkkh3Xqxgu6ZeVUxsg5lFUmin8l6oySRXR-Wt3MwpvgWjV15onxbVvy_rkVuiMStiI1z9ZecIkFi7MpBc5zJrtYOzgxbWspJg9nc9XeyYfUejhrBVahUSY_yVjnFF4vB1ic2coU8WX2lknYgMxnR0ot-7dfFf3R2WU0xv358jeoU7r0YnooFQzd6Z-Igyu0qh1ZyksM8htiIi-dxu405MMIluc_SnxSRd6qg-wOsnMQWM_oo65_VFbFYsczZ1cyzmZihfuIr72BOMYgjO4nFp224ROpW_tcxWc-b5tfaVkc4aMmczi4tJsbqo3Ri4Q8QdZQs9uuzb-Mjal-FWyRb2r9o3Vwxo0RpeVcZ7IWmzfW8B50hnfcj-qqphRQQcQfnMtRSfMg-dYXiR-304Zfmulh7l_S-6xqZwqWzd6"
+
+    private val commentsList: MutableList<PlaceholderContent.Comment> = ArrayList()
 
     lateinit var itemTitleTextView: TextView
     lateinit var itemDateTextView: TextView
@@ -65,6 +77,9 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
     lateinit var assignButton: Button
     lateinit var finishButton: Button
     lateinit var chatContainer: LinearLayout
+    lateinit var recyclerView: RecyclerView
+    lateinit var commentEditText: EditText
+    lateinit var saveButton: Button
 
     private var _binding: FragmentDenunciaDetailBinding? = null
 
@@ -96,8 +111,10 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
         val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         userRole = sharedPreferences.getString("role", null).toString()
         userId = sharedPreferences.getString("id", null).toString()
+        userName = sharedPreferences.getString("name", "").toString() + " " +  sharedPreferences.getString("lastname", "").toString()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -119,6 +136,10 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
         assignButton = binding.assignButton!!
         finishButton = binding.finishButton!!
         chatContainer = binding.chatContainer!!
+        recyclerView = binding.commentsRecyclerView!!
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        commentEditText = binding.commentEditText!!
+        saveButton = binding.saveButton!!
 
         updateContent()
         rootView.setOnDragListener(dragListener)
@@ -162,6 +183,27 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                     startActivity(Intent(getActivity(), DenunciaDetailHostActivity::class.java))
                 } else {}
             }
+        }
+
+        saveButton.setOnClickListener {
+            val uuid: UUID = UUID.randomUUID();
+            val fechaActual = LocalDateTime.now()
+            val formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+            val fechaFormateada = fechaActual.format(formato)
+
+            if(userId != ""){
+                var comment: PlaceholderContent.Comment =
+                    PlaceholderContent.Comment(uuid.toString(),fechaFormateada, userId, userName,
+                        commentEditText.text.toString()
+                    )
+                commentsList.add(comment)
+                db.collection("denuncias").document(id).set(hashMapOf(
+                    "comments" to commentsList
+                ), SetOptions.merge())
+            }
+
+            commentEditText.setText("")
+            recyclerView.adapter = CommentsAdapter(commentsList)
         }
 
         return rootView
@@ -250,6 +292,16 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                                 mapFragment!!.visibility = View.GONE
                                 ubicationLabel!!.visibility = View.GONE
                             }
+
+                            if(it.comments != null && it.comments.isNotEmpty()) {
+                                commentsList.addAll(it.comments)
+                                recyclerView.adapter = CommentsAdapter(commentsList)
+                            }
+                            else{
+                                viewPager.visibility = View.GONE
+                                logoImage.visibility = View.VISIBLE;
+                            }
+
                         }
                     } else {
                         println("No se pudo convertir el documento a PlaceholderItem.")
@@ -399,4 +451,27 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
             null
         }
     }
+}
+
+class CommentsAdapter(private val comments: List<PlaceholderContent.Comment>) : RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>() {
+
+    inner class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val dateTextView: TextView = itemView.findViewById(R.id.dateTextView)
+        val userTextView: TextView = itemView.findViewById(R.id.userTextView)
+        val commentTextView: TextView = itemView.findViewById(R.id.commentTextView)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
+        return CommentViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
+        val comment = comments[position]
+        holder.dateTextView.text = comment.dateTime
+        holder.userTextView.text = comment.userName
+        holder.commentTextView.text = comment.comment
+    }
+
+    override fun getItemCount(): Int = comments.size
 }

@@ -20,6 +20,7 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="saveText">Save</string>
     <string name="filterState">Filter by status:</string>
+    <string name="writeComment">Write a comment...</string>
 
     <!-- activity_auth -->
     <string name="menuHome">Home</string>

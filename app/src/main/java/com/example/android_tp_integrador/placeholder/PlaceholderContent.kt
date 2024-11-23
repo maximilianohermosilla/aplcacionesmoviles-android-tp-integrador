@@ -74,7 +74,7 @@ object PlaceholderContent {
                                val userAsignation: String? = "",
                                val images: List<String>? = null,
                                val states: List<Any>? = null,
-                               val comments: List<Any>? = null) {
+                               val comments: List<Comment>? = null) {
         override fun toString(): String = title
     }
 
@@ -88,4 +88,12 @@ object PlaceholderContent {
                                val role: String? = ""){
         override fun toString(): String = email
     }
+
+    data class Comment(
+        val id: String = "",
+        val dateTime: String = "",
+        val userId: String = "",
+        val userName: String = "",
+        val comment: String = ""
+    )
 }

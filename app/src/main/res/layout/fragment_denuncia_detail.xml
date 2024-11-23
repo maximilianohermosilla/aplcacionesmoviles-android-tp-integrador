@@ -211,29 +211,36 @@
             <LinearLayout
                 android:id="@+id/chatContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_weight="1"
                 >
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     style="?android:attr/textAppearanceLarge"
-                    android:padding="16dp"
+                    android:paddingHorizontal="16dp"
                     android:textColor="@color/colorTextSecondary"
                     android:layout_weight="1"
                     android:text="Chat"/>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/commentsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#c3c6c8"
+                    android:padding="4dp"
+                    android:paddingTop="16dp"
+                    android:layout_marginTop="8dp"/>
 
                 <EditText
-                    android:id="@+id/descripcionEditText"
+                    android:id="@+id/commentEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorTextSecondary"
                     android:textColorHint="@color/colorTextSecondary"
                     android:layout_margin="10dp"
                     android:ems="10"
-                    android:hint="@string/descriptionText" />
+                    android:hint="@string/writeComment" />
 
                 <Button
                     android:id="@+id/saveButton"

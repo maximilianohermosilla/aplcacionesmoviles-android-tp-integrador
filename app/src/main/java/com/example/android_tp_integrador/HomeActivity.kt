@@ -51,6 +51,7 @@ class HomeActivity : ComponentActivity() {
         val email: String = preferences.getString("email", null) ?: bundle?.getString("email").toString()
         val provider: String = preferences.getString("provider", null) ?: bundle?.getString("provider").toString()
         val name: String = preferences.getString("name", null) ?: bundle?.getString("name").toString()
+        val lastname: String = preferences.getString("lastname", null) ?: bundle?.getString("lastname").toString()
         val role: String = preferences.getString("role", null) ?: bundle?.getString("role").toString()
 
         setup(id ?: "", email ?: "", provider ?: "", name ?: "", role ?: "");
@@ -60,6 +61,7 @@ class HomeActivity : ComponentActivity() {
         prefs.putString("email", email)
         prefs.putString("provider", provider)
         prefs.putString("name", name)
+        prefs.putString("lastname", lastname)
         prefs.putString("role", role)
         prefs.apply()
 
