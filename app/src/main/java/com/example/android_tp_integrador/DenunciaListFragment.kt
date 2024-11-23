@@ -92,7 +92,6 @@ class DenunciaListFragment : Fragment() {
 
         val volverButton: Button = view.findViewById<View>(R.id.volverButton) as Button
         volverButton.setOnClickListener {
-            //parentFragmentManager.popBackStack()
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
@@ -122,9 +121,6 @@ class DenunciaListFragment : Fragment() {
                 R.id.nav_user -> {
                     println("nav_user presionado")
                     startActivity(Intent(activity, ProfileActivity::class.java))
-//                    if (this !is NotificationsActivity) {
-//                        startActivity(Intent(this, NotificationsActivity::class.java))
-//                    }
                     true
                 }
                 else -> false
@@ -195,7 +191,6 @@ class DenunciaListFragment : Fragment() {
                 //.orderBy("dateCreation", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
-                    // Aquí obtienes una lista de documentos que cumplen con la condición
                     val denunciasList = querySnapshot.documents.mapNotNull { document ->
                         document.toObject(PlaceholderContent.PlaceholderItem::class.java)
                     }
@@ -362,7 +357,6 @@ class DenunciaListFragment : Fragment() {
 
                             docRef.delete()
                                 .addOnSuccessListener {
-                                    // Documento eliminado exitosamente
                                     Log.d(
                                         "Firestore",
                                         "Documento con ID $item.id eliminado exitosamente"
@@ -372,7 +366,6 @@ class DenunciaListFragment : Fragment() {
                                     context.startActivity(intent)
                                 }
                                 .addOnFailureListener { e ->
-                                    // Error al eliminar el documento
                                     Log.e("Firestore", "Error al eliminar documento", e)
                                 }
                         }
@@ -389,7 +382,6 @@ class DenunciaListFragment : Fragment() {
             with(holder.itemView) {
                 tag = item
                 setOnClickListener { itemView ->
-                    //val item = itemView.tag as PlaceholderContent.PlaceholderItem
                     val bundle = Bundle()
                     bundle.putString(
                         DenunciaDetailFragment.ARG_ITEM_ID,
@@ -403,11 +395,7 @@ class DenunciaListFragment : Fragment() {
                     }
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    /**
-                     * Context click listener to handle Right click events
-                     * from mice and trackpad input to provide a more native
-                     * experience on larger screen devices
-                     */
+
                     setOnContextClickListener { v ->
                         val item = v.tag as PlaceholderContent.PlaceholderItem
                         Toast.makeText(
@@ -420,8 +408,6 @@ class DenunciaListFragment : Fragment() {
                 }
 
                 setOnLongClickListener { v ->
-                    // Setting the item id as the clip data so that the drop target is able to
-                    // identify the id of the content
                     val clipItem = ClipData.Item(item.id)
                     val dragData = ClipData(
                         v.tag as? CharSequence,

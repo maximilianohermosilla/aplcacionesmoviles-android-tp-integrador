@@ -38,7 +38,6 @@ import com.google.firebase.remoteconfig.remoteConfigSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.net.URL
 import java.util.ArrayList
@@ -392,9 +391,6 @@ class PhotoActivity : AppCompatActivity() {
                 R.id.nav_user -> {
                     println("nav_user presionado")
                     startActivity(Intent(this, ProfileActivity::class.java))
-//                    if (this !is NotificationsActivity) {
-//                        startActivity(Intent(this, NotificationsActivity::class.java))
-//                    }
                     true
                 }
                 else -> false
@@ -424,7 +420,6 @@ class PhotoActivity : AppCompatActivity() {
 
     // Función para cargar una imagen desde una URL
     private suspend fun loadImageFromUrl(url: String): Bitmap? {
-        //val bitmap = loadImageFromUrl(url.replace("\"", "").replace("http:", "https:"))
         return withContext(Dispatchers.IO) {
             try {
                 val connection = URL(url).openStream()

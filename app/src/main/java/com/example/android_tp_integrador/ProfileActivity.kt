@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Button
@@ -16,19 +15,11 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.android_tp_integrador.placeholder.PlaceholderContent
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.Locale
@@ -103,7 +94,6 @@ class ProfileActivity : ComponentActivity() {
 
             } else {
                 println("Usuario no encontrado.")
-                //showAlert()
             }
         }
 
@@ -207,9 +197,6 @@ class ProfileActivity : ComponentActivity() {
                 R.id.nav_user -> {
                     println("nav_user presionado")
                     startActivity(Intent(this, ProfileActivity::class.java))
-//                    if (this !is NotificationsActivity) {
-//                        startActivity(Intent(this, NotificationsActivity::class.java))
-//                    }
                     true
                 }
                 else -> false

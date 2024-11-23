@@ -57,7 +57,6 @@ class NuevaDenunciaActivity : ComponentActivity() {
                 .get()
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()) {
-                        // Convierte el documento a un objeto PlaceholderItem
                         val denuncia =
                             documentSnapshot.toObject(PlaceholderContent.PlaceholderItem::class.java)
 
@@ -91,7 +90,6 @@ class NuevaDenunciaActivity : ComponentActivity() {
         var nextButton: Button = findViewById(R.id.siguienteButton);
         nextButton.setOnClickListener {
 
-            // Validación: verificar si los campos están vacíos
             if (tituloEditText.text.isEmpty()) {
                 tituloEditText.error = "El título es obligatorio"
                 return@setOnClickListener
@@ -121,9 +119,6 @@ class NuevaDenunciaActivity : ComponentActivity() {
                     "priority" to selectedPriority,
                     "userCreation" to userId.toString()
                 ), SetOptions.merge())
-
-            val intent = Intent(this, PhotoActivity::class.java)
-            //startActivity(intent)
 
             showNext(uuid.toString());
         }
@@ -164,9 +159,6 @@ class NuevaDenunciaActivity : ComponentActivity() {
                 R.id.nav_user -> {
                     println("nav_user presionado")
                     startActivity(Intent(this, ProfileActivity::class.java))
-//                    if (this !is NotificationsActivity) {
-//                        startActivity(Intent(this, NotificationsActivity::class.java))
-//                    }
                     true
                 }
                 else -> false

@@ -5,28 +5,21 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
-import android.health.connect.datatypes.ExerciseRoute
 import android.location.Geocoder
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.android_tp_integrador.databinding.ActivityMapsBinding
 import com.example.android_tp_integrador.placeholder.PlaceholderContent
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapFragment
-import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -35,9 +28,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -62,7 +52,6 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         println("Inicializando maps")
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //setContentView(R.layout.activity_location)
 
         // Inicializa el mapa
         val mapFragment = supportFragmentManager
@@ -196,25 +185,12 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-    private fun requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
-            // Si ya tiene permisos, obtener la ubicación
-            getCurrentLocation()
-        } else {
-            // Pedir permisos
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-    }
-
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
-            // Si el permiso es concedido, obtener la ubicación
             getCurrentLocation()
         } else {
             // Manejar el caso en que el permiso no es concedido
-            // Mostrar un mensaje al usuario o deshabilitar la funcionalidad
         }
     }
 
@@ -246,7 +222,6 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             } else {
                 // Muestra un mensaje si el permiso es denegado
-                // Puedes mostrar un diálogo aquí si deseas explicar por qué necesitas el permiso
             }
         }
     }
@@ -284,14 +259,12 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
                 addressFull =  fullAddress;
                 addressGeneral = "$locality, $province"
 
-                // Mostrar la dirección en un Toast (puedes usar otros métodos para mostrarla)
                 Toast.makeText(
                     this,
                     "Dirección: $fullAddress\nCiudad: $locality\nProvincia: $province\nPaís: $country\nCP: $postalCode",
                     Toast.LENGTH_LONG
                 ).show()
 
-                // También puedes usar estos datos para actualizar el marcador
                 currentMarker?.snippet = fullAddress
                 currentMarker?.showInfoWindow()
             } else {
@@ -326,9 +299,6 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
                 R.id.nav_user -> {
                     println("nav_user presionado")
                     startActivity(Intent(this, ProfileActivity::class.java))
-//                    if (this !is NotificationsActivity) {
-//                        startActivity(Intent(this, NotificationsActivity::class.java))
-//                    }
                     true
                 }
                 else -> false

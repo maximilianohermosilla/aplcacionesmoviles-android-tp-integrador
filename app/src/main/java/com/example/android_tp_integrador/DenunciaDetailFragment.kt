@@ -30,7 +30,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import org.json.JSONObject
@@ -105,7 +104,6 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
         arguments?.let {
             if (it.containsKey(ARG_ITEM_ID)) {
                 id = it.getString(ARG_ITEM_ID).toString()
-                //item = PlaceholderContent.ITEM_MAP[it.getString(ARG_ITEM_ID)]
             }
         }
         val sharedPreferences = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
@@ -179,7 +177,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                         ), SetOptions.merge())
                     }
                     finishButton.visibility = View.GONE
-                    sendNotificationByComplaintID(id, "Tu denuncia ha sido finalizada", "$userName era protector asignado")
+                    sendNotificationByComplaintID(id, "Tu denuncia ha sido finalizada", "")
 
                     startActivity(Intent(getActivity(), DenunciaDetailHostActivity::class.java))
                 } else {}
@@ -229,7 +227,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                     // Procesa el objeto obtenido
                     if (denuncia != null) {
                         println("Denuncia encontrada: $denuncia")
-                        //var userId = denuncia.userCreation
+
                         item = denuncia
                         item?.let {
                             itemTitleTextView.text = it.title

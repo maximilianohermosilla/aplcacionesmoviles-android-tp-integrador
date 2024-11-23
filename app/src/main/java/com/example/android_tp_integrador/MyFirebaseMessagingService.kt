@@ -25,9 +25,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val title = remoteMessage.data["title"] ?: "Sin título"
             val body = remoteMessage.data["body"] ?: "Sin contenido"
 
-            // Mostrar un Toast con el body del mensaje
-            //showToast("$title: $body")
-
             Log.d("FCM", "Mensaje recibido con data: $title - $body")
 
             // Muesstra la notificación en la barra de notificaciones
