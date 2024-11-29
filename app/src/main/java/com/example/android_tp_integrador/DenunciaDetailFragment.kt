@@ -269,7 +269,7 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                                 val adapter = SliderAdapter(it.images)
                                 viewPager.adapter = adapter
                                 viewPager.visibility = View.VISIBLE;
-                                logoImage.visibility = View.INVISIBLE;
+                                logoImage.visibility = View.GONE;
                             }
                             else{
                                 viewPager.visibility = View.GONE
@@ -297,10 +297,10 @@ class DenunciaDetailFragment : Fragment(), OnMapReadyCallback {
                                 commentsList.addAll(it.comments)
                                 recyclerView.adapter = CommentsAdapter(commentsList)
                             }
-                            else{
-                                viewPager.visibility = View.GONE
-                                logoImage.visibility = View.VISIBLE;
-                            }
+//                            else{
+//                                viewPager.visibility = View.GONE
+//                                logoImage.visibility = View.VISIBLE;
+//                            }
 
                         }
                     } else {

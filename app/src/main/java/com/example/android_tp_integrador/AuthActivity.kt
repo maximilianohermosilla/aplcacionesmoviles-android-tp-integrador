@@ -601,7 +601,7 @@ class AuthActivity : ComponentActivity() {
 
     private fun setLocale(languageCode: String) {
         val currentLanguage = prefs.getString("selectedLanguage", "")
-        if (currentLanguage != languageCode) { // Solo recargar si el idioma es diferente
+        if (currentLanguage != languageCode) {
             val locale = Locale(languageCode)
             Locale.setDefault(locale)
             val config = resources.configuration

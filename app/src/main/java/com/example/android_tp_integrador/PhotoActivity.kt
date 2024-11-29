@@ -188,11 +188,12 @@ class PhotoActivity : AppCompatActivity() {
 
     private fun openCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(this.packageManager) != null) {
-            startActivityForResult(intent, CAMERA_REQUEST_CODE)
-        } else {
-            Toast.makeText(this, "No se puede abrir la cámara", Toast.LENGTH_SHORT).show()
-        }
+        startActivityForResult(intent, CAMERA_REQUEST_CODE)
+//        if (intent.resolveActivity(this.packageManager) != null) {
+//            startActivityForResult(intent, CAMERA_REQUEST_CODE)
+//        } else {
+//            Toast.makeText(this, "No se puede abrir la cámara", Toast.LENGTH_SHORT).show()
+//        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
